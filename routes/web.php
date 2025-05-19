@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\PrizeCodeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScratchGame\ScratchController;
 use Illuminate\Foundation\Application;
@@ -28,3 +29,4 @@ Route::middleware('auth')->group(function () {
 Route::get('/scratch-game', [ScratchController::class, 'index'])->name('scratch-game.index');
 
 require __DIR__ . '/auth.php';
+require __DIR__ . '/admin.php';
