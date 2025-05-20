@@ -14,7 +14,27 @@ const maxAttempts = ref(2);
 const gameState = ref("initial");
 const winningBox = ref(Math.floor(Math.random() * TOTAL_BOXES) + 1);
 const selectedBox = ref(null);
+const prizeCode = ref("");
+const error = ref("");
+const isLoading = ref(false);
 const discount = ref(DEFAULT_DISCOUNT);
+
+// Obtener código del servidor
+const getCode = async () => {
+    try {
+        isLoading.value = true;
+        error.value = null;
+        const response = await axios.post(route("box-game.get-code"));
+        prizeCode.value = response.data.code;
+        return true;
+    } catch (err) {
+        error.value = err.response?.data?.error || "Error al obtener el código";
+        console.error("Error:", err);
+        return false;
+    } finally {
+        isLoading.value = false;
+    }
+};
 
 // Sonido de victoria
 const winSound = new Audio("/sounds/tada.mp3");
@@ -34,25 +54,30 @@ const startGame = () => {
     selectedBox.value = null;
 };
 
-const selectBox = (boxNumber) => {
+const selectBox = async (boxNumber) => {
     if (!canSelectBox() || selectedBox.value === boxNumber) return;
 
     selectedBox.value = boxNumber;
     attempts.value++;
 
     // Verificar condiciones de victoria/derrota
-    if (isWinner()) {
-        gameState.value = "won";
-        // Reproducir sonido de victoria
-        winSound.play();
-        // Activar confeti
-        setTimeout(() => {
-            confetti({
-                particleCount: 100,
-                spread: 100,
-                origin: { y: 0.6 },
-            });
-        }, 500);
+    if (boxNumber === winningBox.value) {
+        isLoading.value = true;
+        const success = await getCode();
+
+        if (success) {
+            gameState.value = "won";
+            winSound.play();
+            setTimeout(() => {
+                confetti({
+                    particleCount: 100,
+                    spread: 100,
+                    origin: { y: 0.6 },
+                });
+            }, 500);
+        } else {
+            gameState.value = "error";
+        }
     } else if (attempts.value >= maxAttempts.value) {
         gameState.value = "lost";
     }
@@ -76,6 +101,22 @@ onMounted(() => {
     <div
         class="container mx-auto px-4 py-8 flex flex-col items-center justify-center min-h-screen"
     >
+        <!-- Mensaje de error -->
+        <div v-if="error" class="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">
+            {{ error }}
+        </div>
+        <!-- Estado de carga -->
+        <div
+            v-if="isLoading"
+            class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center"
+        >
+            <div class="bg-white rounded-lg p-4">
+                <div
+                    class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary-500 border-t-transparent"
+                ></div>
+                <p class="mt-2 text-gray-600">Cargando...</p>
+            </div>
+        </div>
         <!-- Encabezado -->
         <div class="text-center mb-8">
             <h1
@@ -124,9 +165,7 @@ onMounted(() => {
             class="w-full max-w-4xl bg-white rounded-xl shadow-lg px-6 pt-0 pb-4 mb-8"
         >
             <!-- Cajas de juego -->
-            <div
-                class="grid grid-cols-2 min-[1035px]:flex min-[1035px]:flex-row justify-around items-center gap-4 my-8"
-            >
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 my-8">
                 <!-- Dos cajas en la primera fila en móvil, todas en línea en desktop -->
                 <div class="flex justify-center">
                     <BoxComponent
@@ -136,9 +175,11 @@ onMounted(() => {
                         :is-loser="selectedBox === 1 && 1 !== winningBox"
                         :game-over="gameState === 'won' || gameState === 'lost'"
                         :disabled="!canSelectBox() || selectedBox === 1"
+                        :prize-code="prizeCode"
                         @select="selectBox(1)"
                     />
                 </div>
+                <!-- Caja 2 -->
                 <div class="flex justify-center">
                     <BoxComponent
                         :box-number="2"
@@ -147,12 +188,12 @@ onMounted(() => {
                         :is-loser="selectedBox === 2 && 2 !== winningBox"
                         :game-over="gameState === 'won' || gameState === 'lost'"
                         :disabled="!canSelectBox() || selectedBox === 2"
+                        :prize-code="prizeCode"
                         @select="selectBox(2)"
                     />
                 </div>
-                <div
-                    class="flex justify-center col-span-2 min-[1035px]:col-span-1"
-                >
+                <!-- Caja 3 -->
+                <div class="flex justify-center col-span-2 md:col-span-1">
                     <BoxComponent
                         :box-number="3"
                         :selected="selectedBox === 3"
@@ -160,6 +201,7 @@ onMounted(() => {
                         :is-loser="selectedBox === 3 && 3 !== winningBox"
                         :game-over="gameState === 'won' || gameState === 'lost'"
                         :disabled="!canSelectBox() || selectedBox === 3"
+                        :prize-code="prizeCode"
                         @select="selectBox(3)"
                     />
                 </div>

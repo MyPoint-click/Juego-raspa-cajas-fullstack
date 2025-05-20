@@ -44,6 +44,35 @@ class PrizeCodeController extends Controller
         return back()->with('success', "{$codes->count()} códigos generados exitosamente");
     }
 
+    public function verifyCode(Request $request)
+    {
+        $request->validate([
+            'code' => 'required|string'
+        ]);
+
+        $code = PrizeCode::where('code', $request->code)->first();
+
+        if (!$code) {
+            return back()->with('error', 'Código no encontrado');
+        }
+
+        if ($code->status === 'unused') {
+            return back()->with('error', 'Este código aún no ha sido visualizado');
+        }
+
+        if ($code->status === 'used') {
+            return back()->with('error', 'Este código ya ha sido utilizado');
+        }
+
+        // Si el código está en estado 'viewed', actualizarlo a 'used'
+        $code->update([
+            'status' => 'used',
+            'used_at' => now()
+        ]);
+
+        return back()->with('success', 'Código verificado y marcado como usado exitosamente');
+    }
+
     public function destroy(PrizeCode $prizeCode)
     {
         $prizeCode->delete();

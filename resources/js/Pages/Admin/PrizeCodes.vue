@@ -24,6 +24,20 @@ const deletePrizeCode = (id) => {
         form.delete(route("admin.prize-codes.destroy", id));
     }
 };
+
+const verifyForm = useForm({
+    code: "",
+});
+
+const verifyCode = () => {
+    verifyForm.post(route("admin.prize-codes.verify"), {
+        preserveScroll: true,
+        onSuccess: () => {
+            verifyForm.reset();
+            // Recargar la tabla si es necesario
+        },
+    });
+};
 </script>
 
 <template>
@@ -31,6 +45,32 @@ const deletePrizeCode = (id) => {
     <AuthenticatedLayout>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <!-- Formulario de verificación -->
+                <div class="mb-6 bg-white p-6 shadow-sm sm:rounded-lg">
+                    <h3 class="mb-4 text-lg font-medium text-gray-900">
+                        Verificar Código
+                    </h3>
+                    <form @submit.prevent="verifyCode" class="flex gap-4">
+                        <div class="flex-1">
+                            <input
+                                type="text"
+                                v-model="verifyForm.code"
+                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+                                placeholder="Ingrese el código a verificar"
+                            />
+                        </div>
+                        <button
+                            type="submit"
+                            :disabled="verifyForm.processing"
+                            class="inline-flex items-center rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
+                        >
+                            <span v-if="verifyForm.processing"
+                                >Verificando...</span
+                            >
+                            <span v-else>Verificar Código</span>
+                        </button>
+                    </form>
+                </div>
                 <!-- Formulario de generación -->
                 <div
                     class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 mb-6"
