@@ -1,12 +1,29 @@
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
-import { Head, useForm } from "@inertiajs/vue3";
+import { Head, useForm, router } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import debounce from "lodash/debounce";
 
 const props = defineProps({
     codes: Object,
+    filters: Object,
 });
+
+// Formulario de búsqueda
+const search = ref(props.filters.search);
+
+// Función debounced para la búsqueda
+watch(
+    search,
+    debounce((value) => {
+        router.get(
+            route("admin.prize-codes.index"),
+            { search: value },
+            { preserveState: true, preserveScroll: true }
+        );
+    }, 100)
+);
 
 const form = useForm({
     quantity: 1,
@@ -45,6 +62,15 @@ const verifyCode = () => {
     <AuthenticatedLayout>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <!-- Barra de búsqueda -->
+                <div class="mb-6">
+                    <input
+                        type="text"
+                        v-model="search"
+                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+                        placeholder="Buscar por código o estado..."
+                    />
+                </div>
                 <!-- Formulario de verificación -->
                 <div class="mb-6 bg-white p-6 shadow-sm sm:rounded-lg">
                     <h3 class="mb-4 text-lg font-medium text-gray-900">

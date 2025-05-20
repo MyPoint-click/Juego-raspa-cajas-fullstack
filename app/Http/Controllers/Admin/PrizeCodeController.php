@@ -10,9 +10,17 @@ use Illuminate\Support\Str;
 
 class PrizeCodeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $codes = PrizeCode::latest()
+        $codes = PrizeCode::query()
+            ->when($request->search, function ($query, $search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('code', 'like', "%{$search}%")
+                        ->orWhere('status', 'like', "%{$search}%")
+                        ->orWhere('expires_at', 'like', "%{$search}%");
+                });
+            })
+            ->latest()
             ->paginate(10)
             ->through(function ($code) {
                 return [
@@ -22,8 +30,13 @@ class PrizeCodeController extends Controller
                     'expires_at' => $code->expires_at ? $code->expires_at->format('d/m/Y') : null,
                     'created_at' => $code->created_at->format('d/m/Y'),
                 ];
-            });
-        return Inertia::render('Admin/PrizeCodes', compact('codes'));
+            })
+            ->withQueryString();
+
+        return Inertia::render('Admin/PrizeCodes', [
+            'codes' => $codes,
+            'filters' => $request->only(['search'])
+        ]);
     }
 
     public function store(Request $request)
