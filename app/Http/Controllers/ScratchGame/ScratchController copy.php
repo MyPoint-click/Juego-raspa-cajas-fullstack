@@ -10,24 +10,6 @@ use Inertia\Inertia;
 
 class ScratchController extends Controller
 {
-    public function __construct()
-    {
-        // Resetear códigos expirados antes de cada acción
-        $this->resetExpiredCodes();
-    }
-
-    private function resetExpiredCodes()
-    {
-        PrizeCode::where('status', 'viewed')
-            ->where('session_expires_at', '<', Carbon::now())
-            ->update([
-                'status' => 'unused',
-                'viewed_at' => null,
-                'session_id' => null,
-                'session_expires_at' => null
-            ]);
-    }
-
     public function index()
     {
         $sessionId = session()->getId();
@@ -49,22 +31,8 @@ class ScratchController extends Controller
     // Este método se encarga de obtener un código de premio que esté disponible y no haya expirado.
     public function getCode()
     {
-        $sessionId = session()->getId();
-
-        // 1. Primero verificar si ya tiene un código reservado
-        $existingCode = PrizeCode::where('session_id', $sessionId)
-            ->where('session_expires_at', '>', Carbon::now())
-            ->first();
-
-        if ($existingCode) {
-            return response()->json([
-                'code' => $existingCode->code
-            ]);
-        }
-
-        // 2. Si no tiene código, buscar uno nuevo
+        // Buscar un código válido (no usado y no expirado)
         $validCode = PrizeCode::where('status', 'unused')
-            ->whereNull('session_id')
             ->where(function ($query) {
                 $query->whereNull('expires_at')
                     ->orWhere('expires_at', '>', Carbon::now());
@@ -72,7 +40,7 @@ class ScratchController extends Controller
 
         if (!$validCode) {
             return response()->json([
-                'error' => 'No hay códigos disponibles.'
+                'error' => 'No hay códigos disponibles. Por favor, contacta con el administrador.'
             ], 404);
         }
 
@@ -80,9 +48,7 @@ class ScratchController extends Controller
         // Marcar el código como visto
         $validCode->update([
             'status' => 'viewed',
-            'viewed_at' => Carbon::now(),
-            'session_id' => $sessionId,
-            'session_expires_at' => Carbon::now()->addMinutes(1) // Establecer la expiración de la sesión
+            'viewed_at' => Carbon::now()
         ]);
 
         return response()->json([

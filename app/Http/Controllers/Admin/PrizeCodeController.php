@@ -12,9 +12,20 @@ class PrizeCodeController extends Controller
 {
     public function index()
     {
-        $codes = PrizeCode::latest()->paginate(10);
+        $codes = PrizeCode::latest()
+            ->paginate(10)
+            ->through(function ($code) {
+                return [
+                    'id' => $code->id,
+                    'code' => $code->code,
+                    'status' => $code->status,
+                    'expires_at' => $code->expires_at ? $code->expires_at->format('d/m/Y') : null,
+                    'created_at' => $code->created_at->format('d/m/Y'),
+                ];
+            });
         return Inertia::render('Admin/PrizeCodes', compact('codes'));
     }
+
     public function store(Request $request)
     {
         $request->validate([

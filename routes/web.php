@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/scratch-game', [ScratchController::class, 'index'])->name('scratch-game.index');
+Route::post('/scratch-game/get-code', [ScratchController::class, 'getCode'])->name('scratch-game.get-code');
 
 require __DIR__ . '/auth.php';
 require __DIR__ . '/admin.php';

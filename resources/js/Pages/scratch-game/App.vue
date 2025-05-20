@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 // import ScratchCard from "../../Components/scratch_game/ScratchCard";
 // import BusinessConfig from "../../Components/scratch_game/BusinessConfig";
 // import RewardDisplay from "../../Components/scratch_game/RewardDisplay.vue";
@@ -7,6 +7,7 @@ import ScratchCard from "@/Components/scratch_game/ScratchCard.vue";
 import BusinessConfig from "@/Components/scratch_game/BusinessConfig.vue";
 import RewardDisplay from "@/Components/scratch_game/RewardDisplay.vue";
 import { generateCode } from "../../utils/rewardUtils.js";
+import axios from "axios";
 
 // App state
 const businessConfig = ref({
@@ -20,8 +21,25 @@ const businessConfig = ref({
 });
 
 const isRevealed = ref(false);
-const rewardCode = ref(generateCode());
+const rewardCode = ref("");
 const isConfigOpen = ref(false);
+const isLoading = ref(false);
+const error = ref(null);
+
+//Obtenemos el código desde el servidor
+const getCode = async () => {
+    try {
+        isLoading.value = true;
+        error.value = null;
+        const response = await axios.post(route("scratch-game.get-code"));
+        rewardCode.value = response.data.code;
+    } catch (err) {
+        error.value = err.response?.data?.error || "Error al obtener el código";
+        console.error("Error al obtener el código:", error.value);
+    } finally {
+        isLoading.value = false;
+    }
+};
 
 // Computed properties
 const containerStyle = computed(() => ({
@@ -34,9 +52,9 @@ const onCardRevealed = () => {
     isRevealed.value = true;
 };
 
-const resetGame = () => {
+const resetGame = async () => {
     isRevealed.value = false;
-    rewardCode.value = generateCode();
+    await getCode();
 };
 
 const toggleConfig = () => {
@@ -47,6 +65,11 @@ const updateConfig = (newConfig) => {
     businessConfig.value = { ...businessConfig.value, ...newConfig };
     isConfigOpen.value = false;
 };
+
+// Obtener código cuando el componente se monta
+onMounted(async () => {
+    await getCode();
+});
 </script>
 
 <template>
@@ -100,8 +123,26 @@ const updateConfig = (newConfig) => {
         <main
             class="flex-grow flex flex-col items-center justify-center py-8 px-4 md:px-8"
         >
+            <!-- Mensaje de error -->
+            <div
+                v-if="error"
+                class="mb-4 p-4 bg-red-100 text-red-700 rounded-lg"
+            >
+                {{ error }}
+            </div>
             <div class="container mx-auto max-w-4xl">
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <!-- Estado de carga -->
+                <div v-if="isLoading" class="text-center p-8">
+                    <div
+                        class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary-500 border-t-transparent"
+                    ></div>
+                    <p class="mt-2 text-gray-600">Cargando...</p>
+                </div>
+
+                <div
+                    v-else
+                    class="bg-white rounded-xl shadow-lg overflow-hidden"
+                >
                     <div class="p-6 md:p-8">
                         <h2
                             class="text-2xl md:text-3xl font-bold text-center mb-6 text-gray-800"
