@@ -28,6 +28,12 @@ class ScratchController extends Controller
             ]);
     }
 
+    //     El constructor se ejecuta cada vez que se crea una instancia del controlador
+    //     resetExpiredCodes() busca códigos que:
+    //      Estén marcados como 'viewed'
+    //      Su tiempo de sesión haya expirado
+    //     Los resetea a su estado inicial 'unused'
+
     public function index()
     {
         $sessionId = session()->getId();
@@ -44,6 +50,11 @@ class ScratchController extends Controller
         }
         return Inertia::render('scratch-game/App');
     }
+
+    // Obtiene el ID de sesión del usuario actual
+    // Busca si el usuario ya tiene un código reservado y válido
+    // Si existe, renderiza la página con ese código
+    // Si no, renderiza la página sin código
 
     //Obtener un código de premio
     // Este método se encarga de obtener un código de premio que esté disponible y no haya expirado.
@@ -89,4 +100,22 @@ class ScratchController extends Controller
             'code' => $validCode->code
         ]);
     }
+
+    // Verifica código existente:
+    // Busca si el usuario ya tiene un código reservado
+    // Si existe y no ha expirado, lo devuelve
+
+    // Busca nuevo código:
+    // Estado 'unused'
+    // Sin sesión asignada
+    // No expirado (o sin fecha de expiración)
+
+    // Maneja errores:
+    // Si no hay códigos disponibles, retorna error 404
+
+    // Reserva el código:
+    // Marca como 'viewed'
+    // Registra cuándo fue visto
+    // Asigna la sesión del usuario
+    // Establece tiempo de expiración (1 minuto)
 }
