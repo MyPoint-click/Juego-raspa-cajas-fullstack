@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Juego Scratch */
 /* Transitions */
 .fade-enter-active,
 .fade-leave-active {
@@ -29,4 +30,36 @@
 
 ::-webkit-scrollbar-thumb:hover {
     background: #a1a1a1;
+}
+
+/* Juego Box */
+.box {
+    transition: all 0.3s ease;
+    transform-style: preserve-3d;
+}
+
+.box:hover {
+    transform: translateY(-10px);
+}
+
+.box.selected {
+    transform: translateY(-15px) scale(1.05);
+}
+
+.box.opened {
+    transform: rotateY(180deg);
+}
+
+.box-front,
+.box-back {
+    backface-visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.box-back {
+    transform: rotateY(180deg);
 }
