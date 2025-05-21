@@ -247,7 +247,12 @@ const bulkDelete = () => {
                                 <th
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
                                 >
-                                    Expira
+                                    Sesion Expira en
+                                </th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+                                >
+                                    Fecha de expiración
                                 </th>
                                 <th
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
@@ -275,6 +280,9 @@ const bulkDelete = () => {
                                     >
                                         {{ code.status }}
                                     </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    {{ code.session_expires_at ?? "No expira" }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     {{ code.expires_at ?? "No expira" }}

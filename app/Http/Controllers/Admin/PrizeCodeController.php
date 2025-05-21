@@ -27,6 +27,7 @@ class PrizeCodeController extends Controller
                     'id' => $code->id,
                     'code' => $code->code,
                     'status' => $code->status,
+                    'session_expires_at' => $code->session_expires_at ? $code->session_expires_at->format('d/m/Y-H:i') : null,
                     'expires_at' => $code->expires_at ? $code->expires_at->format('d/m/Y') : null,
                     'created_at' => $code->created_at->format('d/m/Y'),
                 ];
