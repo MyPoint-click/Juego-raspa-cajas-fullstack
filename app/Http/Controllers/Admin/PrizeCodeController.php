@@ -21,7 +21,7 @@ class PrizeCodeController extends Controller
                 });
             })
             ->latest()
-            ->paginate(10)
+            ->paginate(10000)
             ->through(function ($code) {
                 return [
                     'id' => $code->id,
@@ -90,5 +90,39 @@ class PrizeCodeController extends Controller
     {
         $prizeCode->delete();
         return back()->with('success', 'Código eliminado exitosamente');
+    }
+
+    // Método para eliminar códigos expirados
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
+            'status' => 'required|in:all,unused,viewed,used',
+            'date_before' => 'nullable|date',
+        ]);
+
+        $query = PrizeCode::query();
+
+        // Filtrar por estado si no es 'all'
+        if ($request->status !== 'all') {
+            $query->where('status', $request->status);
+        }
+
+        // Filtrar por fecha si se especificó
+        if ($request->date_before) {
+            $query->whereDate('expires_at', $request->date_before);
+        }
+
+        // Obtener la cantidad de registros que se eliminarán
+        $codesCount = $query->count();
+
+        if ($codesCount === 0) {
+            return back()->with('error', 'No se encontraron códigos que cumplan con los criterios especificados');
+        }
+
+        // Limitar la cantidad a eliminar según lo especificado
+        $actuallyDeleted = $query->take($request->quantity)->delete();
+
+        return back()->with('success', "Se eliminaron {$actuallyDeleted} códigos exitosamente");
     }
 }

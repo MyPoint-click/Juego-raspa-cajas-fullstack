@@ -25,23 +25,27 @@ watch(
     }, 100)
 );
 
+// Formulario de generación de códigos
 const form = useForm({
     quantity: 1,
     expires_at: "",
 });
 
+// Función para generar códigos
 const generateCodes = () => {
     form.post(route("admin.prize-codes.store"), {
         onSuccess: () => form.reset(),
     });
 };
 
+// Función para eliminar un código
 const deletePrizeCode = (id) => {
     if (confirm("¿Estás seguro de eliminar este código?")) {
         form.delete(route("admin.prize-codes.destroy", id));
     }
 };
 
+// Formulario de verificación de códigos
 const verifyForm = useForm({
     code: "",
 });
@@ -53,6 +57,22 @@ const verifyCode = () => {
             verifyForm.reset();
             // Recargar la tabla si es necesario
         },
+    });
+};
+
+// Formulario de eliminación masiva
+const deleteForm = useForm({
+    quantity: 1,
+    status: "all", // 'all', 'unused', 'viewed', 'used'
+    date_before: "", // opcional, para filtrar por fecha
+});
+
+const bulkDelete = () => {
+    if (!confirm("¿Estás seguro de realizar esta eliminación?")) return;
+
+    deleteForm.post(route("admin.prize-codes.bulk-delete"), {
+        preserveScroll: true,
+        onSuccess: () => deleteForm.reset(),
     });
 };
 </script>
@@ -101,6 +121,69 @@ const verifyCode = () => {
                 <div
                     class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 mb-6"
                 >
+                    <h2 class="text-lg font-medium mb-4 text-gray-900">
+                        Eliminación Masiva de Códigos
+                    </h2>
+                    <form @submit.prevent="bulkDelete" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label
+                                    class="block text-sm font-medium text-gray-700"
+                                >
+                                    Cantidad a eliminar
+                                </label>
+                                <input
+                                    type="number"
+                                    v-model="deleteForm.quantity"
+                                    min="1"
+                                    class="mt-1 block w-full rounded-md border-gray-300"
+                                />
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-sm font-medium text-gray-700"
+                                >
+                                    Estado de códigos
+                                </label>
+                                <select
+                                    v-model="deleteForm.status"
+                                    class="mt-1 block w-full rounded-md border-gray-300"
+                                >
+                                    <option value="all">
+                                        Todos los estados
+                                    </option>
+                                    <option value="unused">Sin usar</option>
+                                    <option value="viewed">Visualizados</option>
+                                    <option value="used">Usados</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-sm font-medium text-gray-700"
+                                >
+                                    Fecha de expiración
+                                </label>
+                                <input
+                                    type="date"
+                                    v-model="deleteForm.date_before"
+                                    class="mt-1 block w-full rounded-md border-gray-300"
+                                />
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button
+                                type="submit"
+                                :disabled="deleteForm.processing"
+                                class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                            >
+                                <span v-if="deleteForm.processing"
+                                    >Eliminando...</span
+                                >
+                                <span v-else>Eliminar Códigos</span>
+                            </button>
+                        </div>
+                    </form>
                     <h2 class="text-lg font-medium mb-4">
                         Generar Nuevos Códigos
                     </h2>
