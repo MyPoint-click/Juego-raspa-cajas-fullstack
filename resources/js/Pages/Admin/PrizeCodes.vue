@@ -50,7 +50,11 @@ const verifyForm = useForm({
     code: "",
 });
 
-const verifyCode = () => {
+const verifyCode = (codeToVerify = null) => {
+    // Si se pasa un código, lo asignamos al formulario
+    if (codeToVerify) {
+        verifyForm.code = codeToVerify;
+    }
     verifyForm.post(route("admin.prize-codes.verify"), {
         preserveScroll: true,
         onSuccess: () => {
@@ -92,7 +96,7 @@ const bulkDelete = () => {
                     />
                 </div>
                 <!-- Formulario de verificación -->
-                <div class="mb-6 bg-white p-6 shadow-sm sm:rounded-lg">
+                <!-- <div class="mb-6 bg-white p-6 shadow-sm sm:rounded-lg">
                     <h3 class="mb-4 text-lg font-medium text-gray-900">
                         Verificar Código
                     </h3>
@@ -116,7 +120,8 @@ const bulkDelete = () => {
                             <span v-else>Verificar Código</span>
                         </button>
                     </form>
-                </div>
+                </div> -->
+
                 <!-- Formulario de generación -->
                 <div
                     class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 mb-6"
@@ -184,6 +189,8 @@ const bulkDelete = () => {
                             </button>
                         </div>
                     </form>
+
+                    <!-- Generar Códigos -->
                     <h2 class="text-lg font-medium mb-4">
                         Generar Nuevos Códigos
                     </h2>
@@ -272,7 +279,16 @@ const bulkDelete = () => {
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     {{ code.expires_at ?? "No expira" }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td
+                                    class="px-6 py-4 whitespace-nowrap space-x-2"
+                                >
+                                    <button
+                                        v-if="code.status === 'viewed'"
+                                        @click="verifyCode(code.code)"
+                                        class="text-blue-600 hover:text-blue-900"
+                                    >
+                                        Verificar
+                                    </button>
                                     <button
                                         @click="deletePrizeCode(code.id)"
                                         class="text-red-600 hover:text-red-900"
