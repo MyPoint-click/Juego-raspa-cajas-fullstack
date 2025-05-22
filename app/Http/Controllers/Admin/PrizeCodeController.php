@@ -21,7 +21,7 @@ class PrizeCodeController extends Controller
                 });
             })
             ->latest()
-            ->paginate(10000)
+            ->paginate(5)
             ->through(function ($code) {
                 return [
                     'id' => $code->id,

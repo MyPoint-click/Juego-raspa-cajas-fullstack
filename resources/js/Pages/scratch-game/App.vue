@@ -13,7 +13,7 @@ import axios from "axios";
 const businessConfig = ref({
     name: "Mi Negocio",
     type: "tienda",
-    logo: "https://via.placeholder.com/150",
+    logo: "/public/images/logomypoint.click.png",
     primaryColor: "#0ea5e9",
     secondaryColor: "#14b8a6",
     instruction: "Raspa la tarjeta para descubrir tu premio",
