@@ -78,6 +78,11 @@ class PrizeCodeController extends Controller
             return back()->with('error', 'Este código ya ha sido utilizado');
         }
 
+        // Solo verificar expiración si no está permitido verificar expirados
+        if (!$request->allow_expired && $code->status === 'viewed' && $code->expires_at && $code->expires_at < now()) {
+            return back()->with('error', 'Este código ha expirado y no puede ser verificado');
+        }
+
         // Si el código está en estado 'viewed', actualizarlo a 'used'
         $code->update([
             'status' => 'used',

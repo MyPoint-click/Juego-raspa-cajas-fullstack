@@ -50,18 +50,25 @@ const verifyForm = useForm({
     code: "",
 });
 
+// Agregar ref para el switch de permitir verificación de expirados
+const allowExpiredVerification = ref(false);
+
 const verifyCode = (codeToVerify = null) => {
     // Si se pasa un código, lo asignamos al formulario
     if (codeToVerify) {
         verifyForm.code = codeToVerify;
     }
-    verifyForm.post(route("admin.prize-codes.verify"), {
-        preserveScroll: true,
-        onSuccess: () => {
-            verifyForm.reset();
-            // Recargar la tabla si es necesario
-        },
-    });
+    verifyForm.post(
+        route("admin.prize-codes.verify", {
+            allow_expired: allowExpiredVerification.value,
+        }),
+        {
+            preserveScroll: true,
+            onSuccess: () => {
+                verifyForm.reset();
+            },
+        }
+    );
 };
 
 // Formulario de eliminación masiva
@@ -229,6 +236,25 @@ const bulkDelete = () => {
                     </form>
                 </div>
 
+                <!-- Agregar el switch antes de la tabla -->
+                <div class="mb-4 flex items-center">
+                    <label
+                        class="relative inline-flex items-center cursor-pointer"
+                    >
+                        <input
+                            type="checkbox"
+                            v-model="allowExpiredVerification"
+                            class="sr-only peer"
+                        />
+                        <div
+                            class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"
+                        ></div>
+                        <span class="ml-3 text-sm font-medium text-gray-900">
+                            Permitir verificación de códigos expirados
+                        </span>
+                    </label>
+                </div>
+
                 <!-- Tabla de códigos -->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <table class="min-w-full divide-y divide-gray-200">
@@ -290,8 +316,19 @@ const bulkDelete = () => {
                                 <td
                                     class="px-6 py-4 whitespace-nowrap space-x-2"
                                 >
+                                    <!-- Verificar código con condición fecha de expiración pasada -->
                                     <button
-                                        v-if="code.status === 'viewed'"
+                                        v-if="
+                                            code.status === 'viewed' &&
+                                            (allowExpiredVerification ||
+                                                !code.expires_at ||
+                                                new Date(
+                                                    code.expires_at.replace(
+                                                        /(\d{2})\/(\d{2})\/(\d{4})/,
+                                                        '$3-$2-$1'
+                                                    )
+                                                ) >= new Date())
+                                        "
                                         @click="verifyCode(code.code)"
                                         class="text-blue-600 hover:text-blue-900"
                                     >
