@@ -20,8 +20,13 @@
         "vue": "^3.4.0"
     },
     "dependencies": {
+        "@tsparticles/slim": "^3.8.1",
+        "@tsparticles/vue3": "^3.0.1",
+        "aos": "^2.3.4",
         "canvas-confetti": "^1.9.3",
+        "gsap": "^3.12.2",
         "howler": "^2.2.4",
-        "lodash": "^4.17.21"
+        "lodash": "^4.17.21",
+        "vue-router": "^4.2.5"
     }
 }
