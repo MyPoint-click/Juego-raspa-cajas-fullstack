@@ -12,6 +12,9 @@ export default {
 
     theme: {
         extend: {
+            screens: {
+                "3xl": "1800px",
+            },
             colors: {
                 primary: {
                     50: "#f0f9ff",
@@ -66,8 +69,13 @@ export default {
                 },
             },
             fontFamily: {
+                Eczar: ["Eczar", "serif"],
+                work_sans: ["Work Sans", "sans-serif"],
                 sans: ["Figtree", ...defaultTheme.fontFamily.sans],
             },
+            // fontFamily: {
+            //     sans: ["Figtree", ...defaultTheme.fontFamily.sans],
+            // },
         },
     },
 

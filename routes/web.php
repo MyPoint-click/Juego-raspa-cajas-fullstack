@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\PrizeCodeController;
 use App\Http\Controllers\BoxGame\BoxController;
+use App\Http\Controllers\LandingPageGame\LandingPage;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScratchGame\ScratchController;
 use Illuminate\Foundation\Application;
@@ -27,12 +28,17 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+
+
 //Juegos
 Route::get('/scratch-game', [ScratchController::class, 'index'])->name('scratch-game.index');
 Route::post('/scratch-game/get-code', [ScratchController::class, 'getCode'])->name('scratch-game.get-code');
 
 Route::get('/box-game', [BoxController::class, 'index'])->name('box-game.index');
 Route::post('/box-game/get-code', [BoxController::class, 'getCode'])->name('box-game.get-code');
+
+//Landing Page
+Route::get('/landing-page', [LandingPage::class, 'index'])->name('landing-page.index');
 
 require __DIR__ . '/auth.php';
 require __DIR__ . '/admin.php';
