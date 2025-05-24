@@ -12,7 +12,7 @@ import AudioPlayer from "@/Components/LandingPage/AudioPlayer.vue";
 <template>
     <Head title="Welcome" />
 
-    <div class="min-h-screen bg-slate-900">
+    <div class="landing-page min-h-screen bg-slate-900">
         <Navbar />
         <div class="home">
             <HeroSection />
