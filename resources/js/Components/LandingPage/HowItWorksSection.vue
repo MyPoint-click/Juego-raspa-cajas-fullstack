@@ -3,6 +3,11 @@ import { onMounted } from "vue";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+const demoCredentials = {
+    email: "demo@example.com",
+    password: "demo123",
+};
+
 const steps = [
     {
         title: "Tablero de Control Intuitivo",
@@ -115,6 +120,63 @@ onMounted(() => {
                             {{ step.description }}
                         </p>
                     </div>
+                </div>
+            </div>
+        </div>
+        <!-- Sección probar sistema -->
+        <div class="mt-12 max-w-3xl mx-auto px-4">
+            <div class="glass-card p-6" data-aos="fade-up">
+                <div class="flex flex-col gap-4">
+                    <div
+                        class="flex flex-col md:flex-row items-start justify-between gap-6"
+                    >
+                        <div class="flex-1">
+                            <h3
+                                class="text-xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-400"
+                            >
+                                ¿Quieres probar el sistema?
+                            </h3>
+                            <ul
+                                class="text-sm text-gray-300 list-disc list-inside space-y-1 mb-4"
+                            >
+                                <li>Gestión de códigos de premio</li>
+                                <li>Verificación de códigos</li>
+                                <li>Eliminación individual o masiva</li>
+                            </ul>
+                            <div
+                                class="flex flex-wrap gap-4 items-center text-sm"
+                            >
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-gray-400">Email:</span>
+                                    <code
+                                        class="bg-slate-700/50 px-2 py-1 rounded text-cyan-400"
+                                        >{{ demoCredentials.email }}</code
+                                    >
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-gray-400"
+                                        >Contraseña:</span
+                                    >
+                                    <code
+                                        class="bg-slate-700/50 px-2 py-1 rounded text-cyan-400"
+                                        >{{ demoCredentials.password }}</code
+                                    >
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="md:self-center w-full md:w-auto">
+                            <a
+                                href="/admin/prize-codes"
+                                class="block w-full md:w-auto text-center shrink-0 px-6 py-2 rounded-full text-white font-bold transition-all shadow-lg bg-gradient-to-r from-purple-500 to-cyan-400 hover:from-purple-600 hover:to-cyan-500"
+                            >
+                                Acceder al Panel
+                            </a>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-400 text-center">
+                        * Cuenta de demostración *
+                    </p>
                 </div>
             </div>
         </div>
