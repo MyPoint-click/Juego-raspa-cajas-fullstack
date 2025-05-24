@@ -159,8 +159,7 @@ onMounted(() => {
                         <a
                             :href="whatsappLink"
                             target="_blank"
-                            rel="noopener noreferrer"
-                            class="inline-flex items-center justify-center px-8 py-3 rounded-full text-white font-bold transition-all shadow-lg bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700"
+                            class="hero-button-whatsapp inline-flex items-center justify-center px-8 py-3 rounded-full text-white font-bold transition-all shadow-lg bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 cursor-pointer"
                         >
                             <svg
                                 class="w-6 h-6 mr-2"

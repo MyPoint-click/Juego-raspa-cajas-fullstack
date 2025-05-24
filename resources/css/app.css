@@ -156,6 +156,15 @@ h6 {
     transform: scale(1.05);
     box-shadow: 0 0 15px var(--accent);
 }
+.hero-button-whatsapp {
+    background: linear-gradient(90deg #3bf68f);
+    transition: all 0.3s ease;
+}
+
+.hero-button-whatsapp:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #3bf68f;
+}
 
 @keyframes float {
     0% {
