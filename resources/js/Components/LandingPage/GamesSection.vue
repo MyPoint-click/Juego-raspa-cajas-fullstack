@@ -18,7 +18,7 @@ const games = ref([
         description:
             "Genera emoción y acciones inmediatas. Tus clientes rascan tarjetas virtuales para revelar descuentos exclusivos, ofertas especiales o regalos sorpresa. Perfecto para impulsar ventas rápidas, liquidar stock o crear una experiencia memorable que incentiva la compra y el retorno a tu negocio.",
         imageUrl: "/images/landing-page/game-section/scratch-game.png",
-        genre: "Instant Win",
+        genre: "Fidelización Instantánea",
         rating: 5.0,
     },
 ]);

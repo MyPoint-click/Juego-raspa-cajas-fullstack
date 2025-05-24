@@ -131,7 +131,7 @@ onMounted(() => {
                         class="hero-title text-4xl md:text-6xl lg:text-7xl font-bold mb-4"
                     >
                         <span class="block text-white"
-                            >Transforma clientes</span
+                            >MyPoint.Click Presenta</span
                         >
                         <span
                             class="block text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-400 glow-text"
