@@ -130,18 +130,21 @@ onMounted(() => {
                     <h1
                         class="hero-title text-4xl md:text-6xl lg:text-7xl font-bold mb-4"
                     >
-                        <span class="block text-white">Enter The</span>
+                        <span class="block text-white"
+                            >Transforma clientes</span
+                        >
                         <span
                             class="block text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-400 glow-text"
-                            >GAMING UNIVERSE</span
+                            >¡Game Point!</span
                         >
                     </h1>
 
                     <p
                         class="hero-subtitle text-xl md:text-2xl text-gray-300 mb-8"
                     >
-                        Experience the next generation of immersive gaming with
-                        cutting-edge technology and stunning visuals.
+                        Atrae, retén y deleita a tus clientes como nunca antes.
+                        Con nuestros juegos interactivos, convierte cada visita
+                        en una oportunidad de crecimiento para tu negocio.
                     </p>
 
                     <div
@@ -151,13 +154,13 @@ onMounted(() => {
                             href="#games"
                             class="hero-button px-8 py-3 rounded-full text-white font-bold transition-all shadow-lg"
                         >
-                            Explore Games
+                            Ver juegos
                         </a>
                         <a
                             href="#how-it-works"
                             class="px-8 py-3 rounded-full border-2 border-purple-500 text-white font-bold hover:bg-purple-500/20 transition-all"
                         >
-                            Learn More
+                            ¿Cómo funciona?
                         </a>
                     </div>
                 </div>
@@ -166,7 +169,7 @@ onMounted(() => {
                     <div class="hero-image relative float-animation">
                         <img
                             src="/images/landing-page/robot-mypoint.jpeg"
-                            alt="Gaming Setup"
+                            alt="Robot amigable representando la fidelización de clientes"
                             class="rounded-lg shadow-2xl border border-purple-500/30 glow-border"
                         />
                         <div

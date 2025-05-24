@@ -5,27 +5,27 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const steps = [
     {
-        title: "Admin Dashboard",
+        title: "Tablero de Control Intuitivo",
         description:
-            "Access your dedicated dashboard to manage codes, track usage, and analyze customer engagement.",
+            "Accede a tu panel de control personalizado y fácil de usar. Gestiona tus códigos en un solo lugar, sin complicaciones.",
         icon: "M4 6h16M4 10h16M4 14h16M4 18h16",
     },
     {
-        title: "Code Management",
+        title: "Gestión de Códigos Flexible",
         description:
-            "Create and manage reward codes, set validity periods, and control distribution limits.",
+            "Crea códigos de premio únicos con total flexibilidad. Define su validez, establece límites. ¡Automatiza tus incentivos!",
         icon: "M12 6v6m0 0v6m0-6h6m-6 0H6",
     },
     {
-        title: "Analytics & Insights",
+        title: "Gestión Práctica de Campañas", // Título más general y que engloba la administración
         description:
-            "Monitor game performance, redemption rates, and customer engagement metrics in real-time.",
-        icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
+            "Administra los códigos y la configuración de tus campañas de forma sencilla. Para tus promociones de fechas especiales.",
+        icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z", // El ícono de 'chart' o 'dashboard' sigue siendo algo engañoso si no hay reportes. Podríamos cambiarlo si hay otro que sugiera 'control' o 'configuración'. Si no, este puede ser un placeholder hasta que crezca la funcionalidad.
     },
     {
-        title: "Customer Support",
+        title: "Soporte y Asistencia",
         description:
-            "Built-in tools to handle customer inquiries and manage code redemption issues.",
+            "No estás solo. Nuestro soporte está listo para ayudarte con cualquier consulta. Asegura una experiencia fluida para ti y tus clientes.",
         icon: "M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z",
     },
 ];
@@ -61,11 +61,12 @@ onMounted(() => {
                 <h2
                     class="text-4xl md:text-5xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-400"
                 >
-                    Admin Management
+                    Administración de Códigos
                 </h2>
                 <p class="text-xl text-gray-300 max-w-3xl mx-auto">
-                    Easy-to-use tools for managing your reward codes and
-                    tracking customer engagement
+                    Con herramientas fáciles de usar para administrar sus
+                    códigos de recompensa para mejorar la experiencia del
+                    cliente
                 </p>
             </div>
 

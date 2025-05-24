@@ -5,23 +5,21 @@ import GameCard from "./GameCard.vue";
 const games = ref([
     {
         id: 1,
-        title: "Mystery Box Game",
+        title: "Caja Sorpresa: ¡Elige tu Recompensa!",
         description:
-            "An exciting game where users can win amazing prizes and discounts by selecting and opening virtual boxes.",
-        imageUrl:
-            "https://images.pexels.com/photos/821651/pexels-photo-821651.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        genre: "Interactive",
-        rating: 4.8,
+            "Cautiva a tus clientes y dispara la interacción en tu web.Ideal para campañas express, lanzamientos o simplemente para añadir un toque de diversión que ¡multiplica tus conversiones y la recurrencia de tus clientes!",
+        imageUrl: "/images/landing-page/game-section/box-game.png",
+        genre: "Fidelización Instantánea",
+        rating: 5.0,
     },
     {
         id: 2,
-        title: "Scratch & Win",
+        title: "Raspa y Gana: ¡Premios al Instante, Clientes Fieles!",
         description:
-            "Scratch virtual cards to reveal instant prizes, discounts, and special offers.",
-        imageUrl:
-            "https://images.pexels.com/photos/7376/startup-photos.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            "Genera emoción y acciones inmediatas. Tus clientes rascan tarjetas virtuales para revelar descuentos exclusivos, ofertas especiales o regalos sorpresa. Perfecto para impulsar ventas rápidas, liquidar stock o crear una experiencia memorable que incentiva la compra y el retorno a tu negocio.",
+        imageUrl: "/images/landing-page/game-section/scratch-game.png",
         genre: "Instant Win",
-        rating: 4.9,
+        rating: 5.0,
     },
 ]);
 
@@ -42,13 +40,15 @@ const filteredGames = computed(() => {
         <div class="container mx-auto px-4">
             <div class="text-center mb-12" data-aos="fade-up">
                 <h2
-                    class="text-4xl md:text-5xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-400"
+                    class="text-4xl md:text-5xl font-bold mb-4 pb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-400"
                 >
-                    Our Engagement Games
+                    Conoce Nuestros Juegos
                 </h2>
                 <p class="text-xl text-gray-300 max-w-3xl mx-auto">
-                    Interactive games designed to boost customer engagement and
-                    loyalty through exciting rewards
+                    Impulsa la fidelización con experiencias interactivas y
+                    premios irresistibles. Descubre cómo nuestros juegos
+                    transforman cada interacción en una oportunidad de
+                    crecimiento.
                 </p>
             </div>
 
@@ -63,6 +63,18 @@ const filteredGames = computed(() => {
                     data-aos="fade-up"
                     :data-aos-delay="game.id * 0"
                 />
+            </div>
+            <div
+                class="text-center mt-12"
+                data-aos="fade-up"
+                data-aos-delay="200"
+            >
+                <a
+                    href="#contact"
+                    class="px-8 py-3 rounded-full text-white font-bold transition-all shadow-lg bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600"
+                >
+                    ¡Quiero Fidelizar a Mis Clientes!
+                </a>
             </div>
         </div>
     </section>

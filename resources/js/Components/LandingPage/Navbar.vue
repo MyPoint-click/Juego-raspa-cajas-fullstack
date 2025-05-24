@@ -34,8 +34,8 @@ const toggleMobileMenu = () => {
             <div class="flex justify-between items-center">
                 <!-- Logo -->
                 <a href="#" class="text-2xl font-bold tracking-wider">
-                    <span class="text-purple-500">NEXUS</span>
-                    <span class="text-cyan-400">GAMING</span>
+                    <span class="text-purple-500">Game</span>
+                    <span class="text-cyan-400">Point</span>
                 </a>
 
                 <!-- Desktop Navigation -->
