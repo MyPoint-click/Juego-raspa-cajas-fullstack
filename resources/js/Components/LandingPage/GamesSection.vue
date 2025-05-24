@@ -11,6 +11,7 @@ const games = ref([
         imageUrl: "/images/landing-page/game-section/box-game.png",
         genre: "Fidelización Instantánea",
         rating: 5.0,
+        gameUrl: "/box-game",
     },
     {
         id: 2,
@@ -20,6 +21,7 @@ const games = ref([
         imageUrl: "/images/landing-page/game-section/scratch-game.png",
         genre: "Fidelización Instantánea",
         rating: 5.0,
+        gameUrl: "/scratch-game",
     },
 ]);
 
@@ -70,7 +72,8 @@ const filteredGames = computed(() => {
                 data-aos-delay="200"
             >
                 <a
-                    href="#contact"
+                    href="https://wa.me/+59167567444?text=¡Hola! Me interesa saber más sobre los juegos de GamePoint 🎮"
+                    target="_blank"
                     class="px-8 py-3 rounded-full text-white font-bold transition-all shadow-lg bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600"
                 >
                     ¡Quiero Fidelizar a Mis Clientes!

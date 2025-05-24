@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from "vue";
-
 const props = defineProps({
     game: {
         type: Object,
@@ -75,11 +74,13 @@ const resetTilt = () => {
 
             <p class="text-gray-300 mb-4">{{ game.description }}</p>
 
-            <button
-                class="w-full py-2 rounded-lg bg-gradient-to-r from-purple-500 to-cyan-400 text-white font-bold hover:shadow-lg hover:from-purple-600 hover:to-cyan-500 transition-all"
+            <a
+                :href="game.gameUrl"
+                target="_blank"
+                class="w-full inline-block text-center py-2 rounded-lg bg-gradient-to-r from-purple-500 to-cyan-400 text-white font-bold hover:shadow-lg hover:from-purple-600 hover:to-cyan-500 transition-all"
             >
                 ¡Prueba Ahora!
-            </button>
+            </a>
         </div>
     </div>
 </template>
