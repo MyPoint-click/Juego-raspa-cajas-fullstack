@@ -149,7 +149,8 @@ onMounted(() => {
                     v-else-if="gameState === 'won'"
                 >
                     <!-- ¡Felicitaciones! ¡Ganaste {{ discount }} en tu próxima compra! -->
-                    ¡Felicitaciones!, Reclama el código:123 en la tienda
+                    ¡Felicitaciones!, Reclama el código:{{ prizeCode }} en la
+                    tienda
                 </p>
                 <p
                     class="text-lg text-gray-600 mb-4"
