@@ -4,8 +4,8 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const demoCredentials = {
-    email: "demo@example.com",
-    password: "demo123",
+    email: "admin@gmail.com",
+    password: "12345678",
 };
 
 const steps = [
@@ -22,10 +22,10 @@ const steps = [
         icon: "M12 6v6m0 0v6m0-6h6m-6 0H6",
     },
     {
-        title: "Gestión Práctica de Campañas", // Título más general y que engloba la administración
+        title: "Gestión Práctica de Campañas",
         description:
             "Administra los códigos y la configuración de tus campañas de forma sencilla. Para tus promociones de fechas especiales.",
-        icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z", // El ícono de 'chart' o 'dashboard' sigue siendo algo engañoso si no hay reportes. Podríamos cambiarlo si hay otro que sugiera 'control' o 'configuración'. Si no, este puede ser un placeholder hasta que crezca la funcionalidad.
+        icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
     },
     {
         title: "Soporte y Asistencia",
@@ -64,7 +64,7 @@ onMounted(() => {
         <div class="container mx-auto px-4 relative z-10">
             <div class="text-center mb-16" data-aos="fade-up">
                 <h2
-                    class="text-4xl md:text-5xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-400"
+                    class="text-4xl md:text-5xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-400 pb-2"
                 >
                     Administración de Códigos
                 </h2>
@@ -124,34 +124,35 @@ onMounted(() => {
             </div>
         </div>
         <!-- Sección probar sistema -->
-        <div class="mt-12 max-w-3xl mx-auto px-4">
+        <div class="mt-12 max-w-3xl mx-auto px-4 relative z-20">
             <div class="glass-card p-6" data-aos="fade-up">
                 <div class="flex flex-col gap-4">
                     <div
                         class="flex flex-col md:flex-row items-start justify-between gap-6"
                     >
-                        <div class="flex-1">
+                        <div class="flex-1 relative z-20">
                             <h3
-                                class="text-xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-400"
+                                class="text-xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-400 select-text"
                             >
                                 ¿Quieres probar el sistema?
                             </h3>
                             <ul
-                                class="text-sm text-gray-300 list-disc list-inside space-y-1 mb-4"
+                                class="text-sm text-gray-300 list-disc list-inside space-y-1 mb-4 select-text"
                             >
                                 <li>Gestión de códigos de premio</li>
                                 <li>Verificación de códigos</li>
                                 <li>Eliminación individual o masiva</li>
                             </ul>
                             <div
-                                class="flex flex-wrap gap-4 items-center text-sm"
+                                class="flex flex-wrap gap-4 items-center text-sm select-text"
                             >
                                 <div class="flex items-center space-x-2">
                                     <span class="text-gray-400">Email:</span>
                                     <code
                                         class="bg-slate-700/50 px-2 py-1 rounded text-cyan-400"
-                                        >{{ demoCredentials.email }}</code
                                     >
+                                        {{ demoCredentials.email }}
+                                    </code>
                                 </div>
                                 <div class="flex items-center space-x-2">
                                     <span class="text-gray-400"
@@ -159,22 +160,26 @@ onMounted(() => {
                                     >
                                     <code
                                         class="bg-slate-700/50 px-2 py-1 rounded text-cyan-400"
-                                        >{{ demoCredentials.password }}</code
                                     >
+                                        {{ demoCredentials.password }}
+                                    </code>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="md:self-center w-full md:w-auto">
+                        <div
+                            class="md:self-center w-full md:w-auto relative z-20"
+                        >
                             <a
-                                href="/admin/prize-codes"
-                                class="block w-full md:w-auto text-center shrink-0 px-6 py-2 rounded-full text-white font-bold transition-all shadow-lg bg-gradient-to-r from-purple-500 to-cyan-400 hover:from-purple-600 hover:to-cyan-500"
+                                :href="route('admin.prize-codes.index')"
+                                class="block w-full md:w-auto text-center shrink-0 px-6 py-2 rounded-full text-white font-bold transition-all shadow-lg bg-gradient-to-r from-purple-500 to-cyan-400 hover:from-purple-600 hover:to-cyan-500 cursor-pointer"
+                                target="_blank"
                             >
                                 Acceder al Panel
                             </a>
                         </div>
                     </div>
-                    <p class="text-xs text-gray-400 text-center">
+                    <p class="text-xs text-gray-400 text-center relative z-20">
                         * Cuenta de demostración *
                     </p>
                 </div>

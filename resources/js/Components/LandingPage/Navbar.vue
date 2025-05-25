@@ -54,7 +54,7 @@ const toggleMobileMenu = () => {
                     <a
                         href="#how-it-works"
                         class="nav-link text-gray-300 hover:text-white"
-                        >Cómo funciona</a
+                        >¿Cómo funciona?</a
                     >
                     <a
                         href="#why"

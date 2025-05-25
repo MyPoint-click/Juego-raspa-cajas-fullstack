@@ -1,7 +1,9 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { gsap } from "gsap";
-
+const whatsappLink = `https://wa.me/+59167567444?text=${encodeURIComponent(
+    "¡Hola! Me interesa saber más sobre los juegos de GamePoint 🎮"
+)}`;
 const particlesInit = async (engine) => {
     await loadFull(engine);
 };
