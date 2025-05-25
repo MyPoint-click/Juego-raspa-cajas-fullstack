@@ -295,16 +295,24 @@ const bulkDelete = () => {
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span
                                         :class="{
-                                            'bg-green-100 text-green-800':
+                                            'bg-green-500 text-white shadow-md hover:bg-green-600':
                                                 code.status === 'unused',
-                                            'bg-yellow-100 text-yellow-800':
+                                            'bg-yellow-500 text-white shadow-md hover:bg-yellow-600':
                                                 code.status === 'viewed',
-                                            'bg-red-100 text-red-800':
-                                                code.status === 'redeemed',
+                                            'bg-red-500 text-white shadow-md hover:bg-red-600':
+                                                code.status === 'used',
                                         }"
-                                        class="px-2 py-1 rounded-full text-xs font-medium"
+                                        class="px-3 py-1.5 rounded-full text-sm font-semibold inline-block min-w-[90px] text-center transition-all duration-200"
                                     >
-                                        {{ code.status }}
+                                        {{
+                                            code.status === "unused"
+                                                ? "Sin Usar"
+                                                : code.status === "viewed"
+                                                ? "Visualizado"
+                                                : code.status === "used"
+                                                ? "Canjeado"
+                                                : code.status
+                                        }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -330,14 +338,42 @@ const bulkDelete = () => {
                                                 ) >= new Date())
                                         "
                                         @click="verifyCode(code.code)"
-                                        class="text-blue-600 hover:text-blue-900"
+                                        class="inline-flex items-center px-2.5 py-1.5 text-sm font-medium text-white bg-green-400 border border-gray-300 rounded-md hover:bg-white hover:border-gray-400 hover:text-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200"
                                     >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            class="h-4 w-4 mr-1"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                            />
+                                        </svg>
                                         Verificar
                                     </button>
                                     <button
                                         @click="deletePrizeCode(code.id)"
-                                        class="text-red-600 hover:text-red-900"
+                                        class="inline-flex items-center px-2.5 py-1.5 text-sm font-medium text-white bg-red-400 border border-gray-300 rounded-md hover:bg-gray-50 hover:border-red-400 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200"
                                     >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            class="h-4 w-4 mr-1"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                            />
+                                        </svg>
                                         Eliminar
                                     </button>
                                 </td>
