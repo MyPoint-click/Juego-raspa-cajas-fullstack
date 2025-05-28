@@ -5,6 +5,7 @@ use App\Http\Controllers\BoxGame\BoxController;
 use App\Http\Controllers\LandingPage\LandingPageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScratchGame\ScratchController;
+use App\Http\Controllers\WheelGame\WheelController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -36,6 +37,9 @@ Route::post('/scratch-game/get-code', [ScratchController::class, 'getCode'])->na
 
 Route::get('/box-game', [BoxController::class, 'index'])->name('box-game.index');
 Route::post('/box-game/get-code', [BoxController::class, 'getCode'])->name('box-game.get-code');
+
+Route::get('/wheel-game', [WheelController::class, 'index'])->name('wheel-game.index');
+// Route::post('/wheel-game/get-code', [WheelController::class, 'getCode'])->name('wheel-game.get-code');
 
 require __DIR__ . '/auth.php';
 require __DIR__ . '/admin.php';
