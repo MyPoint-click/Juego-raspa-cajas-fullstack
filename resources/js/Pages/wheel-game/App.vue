@@ -5,10 +5,40 @@ import BusinessConfig from "@/Components/scratch_game/BusinessConfig.vue";
 import RewardDisplay from "@/Components/scratch_game/RewardDisplay.vue";
 import axios from "axios";
 
+// Definir las props
+const props = defineProps({
+    errors: Object,
+    auth: Object,
+    reservedCode: {
+        type: String,
+        default: null,
+    },
+});
+
 const isConfigOpen = ref(false);
 const isRevealed = ref(false);
 const rewardCode = ref(""); // Añadimos esta línea
 const isWinner = ref(false);
+
+const isLoading = ref(false);
+const error = ref(null);
+
+// Obtener código desde el servidor
+const getCode = async () => {
+    try {
+        isLoading.value = true;
+        error.value = null;
+        const response = await axios.post(route("wheel-game.get-code"));
+        rewardCode.value = response.data.code;
+        return true;
+    } catch (err) {
+        error.value = err.response?.data?.error || "Error al obtener el código";
+        console.error("Error al obtener el código:", error.value);
+        return false;
+    } finally {
+        isLoading.value = false;
+    }
+};
 
 const businessConfig = ref({
     name: "Mi Negocio",
@@ -68,14 +98,24 @@ const wheelSectors = [
     },
 ];
 
-const handleReveal = (sector) => {
+const handleReveal = async (sector) => {
     if (sector.isWinner) {
-        isWinner.value = true;
-        isRevealed.value = true;
-        rewardCode.value = sector.label;
+        const codeObtained = await getCode();
+
+        if (codeObtained) {
+            isWinner.value = true;
+            isRevealed.value = true;
+        } else {
+            // Si no hay código disponible, tratar como perdedor
+            sector.isWinner = false;
+            isWinner.value = false;
+            setTimeout(() => {
+                isRevealed.value = false;
+                isWinner.value = false;
+            }, 2000);
+        }
     } else {
         isWinner.value = false;
-        // No cambiamos isRevealed para perdedores
         setTimeout(() => {
             isRevealed.value = false;
             isWinner.value = false;
@@ -94,6 +134,14 @@ const containerStyle = computed(() => ({
     "--primary-color": businessConfig.value.primaryColor,
     "--secondary-color": businessConfig.value.secondaryColor,
 }));
+
+onMounted(() => {
+    if (props.reservedCode) {
+        rewardCode.value = props.reservedCode;
+        isRevealed.value = true;
+        isWinner.value = true;
+    }
+});
 </script>
 
 <template>
@@ -145,7 +193,21 @@ const containerStyle = computed(() => ({
         <main
             class="flex-grow flex flex-col items-center justify-center py-8 px-4 md:px-8"
         >
+            <!-- Mensaje de error -->
+            <div
+                v-if="error"
+                class="mb-4 p-4 bg-red-100 text-red-700 rounded-lg"
+            >
+                {{ error }}
+            </div>
             <div class="container mx-auto max-w-4xl">
+                <!-- Estado de carga -->
+                <div v-if="isLoading" class="text-center p-8">
+                    <div
+                        class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary-500 border-t-transparent"
+                    ></div>
+                    <p class="mt-2 text-gray-600">Cargando...</p>
+                </div>
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden">
                     <div class="p-6 md:p-8">
                         <h2

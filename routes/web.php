@@ -39,7 +39,7 @@ Route::get('/box-game', [BoxController::class, 'index'])->name('box-game.index')
 Route::post('/box-game/get-code', [BoxController::class, 'getCode'])->name('box-game.get-code');
 
 Route::get('/wheel-game', [WheelController::class, 'index'])->name('wheel-game.index');
-// Route::post('/wheel-game/get-code', [WheelController::class, 'getCode'])->name('wheel-game.get-code');
+Route::post('wheel-game/get-code', [WheelController::class, 'getCode'])->name('wheel-game.get-code');
 
 require __DIR__ . '/auth.php';
 require __DIR__ . '/admin.php';
