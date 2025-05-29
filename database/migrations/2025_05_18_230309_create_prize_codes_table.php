@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('prize_codes', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('campaign_id')
+                ->constrained()
+                ->onDelete('cascade');
             $table->string('code')->unique();
             $table->string('status')->default('unused');
             $table->timestamp('expires_at')->nullable();
