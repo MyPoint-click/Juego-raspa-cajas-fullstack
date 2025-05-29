@@ -17,6 +17,8 @@ class Campaign extends Model
 
     protected $casts = [
         'is_active' => 'boolean',
+        'starts_at' => 'datetime',
+        'ends_at' => 'datetime',
     ];
 
     public function prizeCodes(): HasMany
