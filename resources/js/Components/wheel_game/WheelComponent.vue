@@ -63,8 +63,13 @@ const drawWheel = () => {
         ctx.rotate(startAngle + arcAngle / 2);
         ctx.textAlign = "right";
         ctx.fillStyle = sector.textColor;
-        ctx.font = 'bold 30px "Rajdhani", sans-serif';
-        ctx.fillText(sector.label, radius - 10, 10);
+        // ctx.font = 'bold 30px "Rajdhani", sans-serif';
+        // Reducir tamaño de fuente y ajustar posición
+        ctx.font = 'bold 20px "Rajdhani", sans-serif'; // Cambio de 30px a 20px
+        // Ajustar posición del texto según el largo del label
+        const textDistance = radius - 30; // Más cerca del centro
+        ctx.fillText(sector.label, textDistance, 5); // Ajustado Y de 10 a 6
+        // ctx.fillText(sector.label, radius - 10, 10);
         ctx.restore();
     });
 };
@@ -167,8 +172,21 @@ onMounted(() => {
     <div class="wheel-container relative">
         <div class="wheel-pointer"></div>
         <div class="wheel-wrapper">
-            <canvas ref="canvas" width="400" height="400" />
-            <button @click="spin" :disabled="isSpinning" class="spin-button">
+            <canvas
+                ref="canvas"
+                width="400"
+                height="400"
+                class="w-full max-w-[400px] md:max-w-[400px] sm:max-w-[300px] xs:max-w-[250px]"
+            />
+            <button
+                @click="spin"
+                :disabled="isSpinning"
+                class="spin-button"
+                :class="{
+                    'sm:w-16 sm:h-16': true, // Botón más pequeño en móvil
+                    'xs:w-12 xs:h-12': true, // Aún más pequeño en pantallas muy pequeñas
+                }"
+            >
                 {{ isSpinning ? "Girando..." : "Girar" }}
             </button>
         </div>

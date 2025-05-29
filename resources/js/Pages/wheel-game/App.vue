@@ -63,19 +63,19 @@ const wheelSectors = [
     {
         color: "#ffcd01",
         textColor: "#b20e12",
-        label: "1000 pts",
+        label: "¡Premio!",
         isWinner: true,
     },
     {
         color: "#685ca2",
         textColor: "#ffffff",
-        label: "¡Inténtalo de nuevo!",
+        label: "¡Continua!",
         isWinner: false,
     },
     {
         color: "#029ede",
         textColor: "#ffffff",
-        label: "500 pts",
+        label: "¡Premio!",
         isWinner: true,
     },
     {
@@ -87,13 +87,13 @@ const wheelSectors = [
     {
         color: "#26cda2",
         textColor: "#ffffff",
-        label: "¡Próxima vez!",
+        label: "¡Tú puedes!",
         isWinner: false,
     },
     {
         color: "#8f3389",
         textColor: "#fcce03",
-        label: "¡Sigue intentando!",
+        label: "¡Falta poco!",
         isWinner: false,
     },
 ];
@@ -217,7 +217,7 @@ onMounted(() => {
                         </h2>
 
                         <div
-                            class="flex flex-col md:flex-row gap-8 items-center justify-center"
+                            class="flex flex-col md:flex-row gap-4 items-center justify-center"
                         >
                             <!-- Añadimos el mismo wrapper que tiene scratch-game -->
                             <div class="w-full md:w-1/2 flex justify-center">
