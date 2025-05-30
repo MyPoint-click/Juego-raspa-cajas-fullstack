@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch } from "vue";
 
-import { Head, useForm, router, Link } from "@inertiajs/vue3";
+import { Head, useForm, router, Link, usePage } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import debounce from "lodash/debounce";
 import Campaigns from "./Campaigns.vue";
@@ -14,6 +14,7 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+    message: Object,
 });
 
 // Formulario de búsqueda
@@ -29,6 +30,25 @@ watch(
             { preserveState: true, preserveScroll: true }
         );
     }, 100)
+);
+
+// Show messages exit and error
+const page = usePage();
+const showMessage = ref(true);
+
+// Watch para manejar los mensajes flash
+watch(
+    () => page.props.message,
+    (newMessage) => {
+        if (newMessage) {
+            showMessage.value = true;
+            // Ocultar el mensaje después de 5 segundos
+            setTimeout(() => {
+                showMessage.value = false;
+            }, 5000);
+        }
+    },
+    { immediate: true }
 );
 
 // Formulario de generación de códigos
@@ -101,6 +121,47 @@ const bulkDelete = () => {
     <AuthenticatedLayout>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <!-- Mensajes de éxito y error -->
+                <TransitionGroup name="fade">
+                    <div
+                        v-if="$page.props.message && showMessage"
+                        class="mb-4"
+                        key="message"
+                    >
+                        <div
+                            :class="{
+                                'bg-green-100 border-green-400 text-green-700':
+                                    $page.props.message.type === 'success',
+                                'bg-red-100 border-red-400 text-red-700':
+                                    $page.props.message.type === 'error',
+                            }"
+                            class="border px-4 py-3 rounded relative"
+                            role="alert"
+                        >
+                            <span class="block sm:inline">{{
+                                $page.props.message.text
+                            }}</span>
+                            <button
+                                @click="showMessage = false"
+                                class="absolute top-0 bottom-0 right-0 px-4 py-3"
+                            >
+                                <svg
+                                    class="fill-current h-6 w-6"
+                                    role="button"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20"
+                                >
+                                    <title>Cerrar</title>
+                                    <path
+                                        d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"
+                                    />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </TransitionGroup>
+                <!-- .Mensajes de éxito y error -->
+
                 <!-- Barra de búsqueda -->
                 <div class="mb-6">
                     <input
@@ -144,7 +205,11 @@ const bulkDelete = () => {
                     <h2 class="text-lg font-medium mb-4 text-gray-900">
                         Eliminación Masiva de Códigos
                     </h2>
-                    <form @submit.prevent="bulkDelete" class="space-y-4">
+                    <form
+                        @submit.prevent="bulkDelete"
+                        class="space-y-4"
+                        novalidate
+                    >
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                                 <label
@@ -157,7 +222,17 @@ const bulkDelete = () => {
                                     v-model="deleteForm.quantity"
                                     min="1"
                                     class="mt-1 block w-full rounded-md border-gray-300"
+                                    :class="{
+                                        'border-red-500':
+                                            deleteForm.errors.quantity,
+                                    }"
                                 />
+                                <div
+                                    v-if="deleteForm.errors.quantity"
+                                    class="text-red-500 text-sm mt-1"
+                                >
+                                    {{ deleteForm.errors.quantity }}
+                                </div>
                             </div>
                             <div>
                                 <label
@@ -168,6 +243,10 @@ const bulkDelete = () => {
                                 <select
                                     v-model="deleteForm.status"
                                     class="mt-1 block w-full rounded-md border-gray-300"
+                                    :class="{
+                                        'border-red-500':
+                                            deleteForm.errors.status,
+                                    }"
                                 >
                                     <option value="all">
                                         Todos los estados
@@ -176,6 +255,12 @@ const bulkDelete = () => {
                                     <option value="viewed">Visualizados</option>
                                     <option value="used">Usados</option>
                                 </select>
+                                <div
+                                    v-if="deleteForm.errors.status"
+                                    class="text-red-500 text-sm mt-1"
+                                >
+                                    {{ deleteForm.errors.status }}
+                                </div>
                             </div>
                             <div>
                                 <label
@@ -186,6 +271,10 @@ const bulkDelete = () => {
                                 <select
                                     v-model="deleteForm.campaign_id"
                                     class="mt-1 block w-full rounded-md border-gray-300"
+                                    :class="{
+                                        'border-red-500':
+                                            deleteForm.errors.campaign_id,
+                                    }"
                                 >
                                     <option value="">Todas las campañas</option>
                                     <option
@@ -196,6 +285,12 @@ const bulkDelete = () => {
                                         {{ campaign.name }}
                                     </option>
                                 </select>
+                                <div
+                                    v-if="deleteForm.errors.campaign_id"
+                                    class="text-red-500 text-sm mt-1"
+                                >
+                                    {{ deleteForm.errors.campaign_id }}
+                                </div>
                             </div>
                             <div>
                                 <label
@@ -207,7 +302,17 @@ const bulkDelete = () => {
                                     type="date"
                                     v-model="deleteForm.date_before"
                                     class="mt-1 block w-full rounded-md border-gray-300"
+                                    :class="{
+                                        'border-red-500':
+                                            deleteForm.errors.date_before,
+                                    }"
                                 />
+                                <div
+                                    v-if="deleteForm.errors.date_before"
+                                    class="text-red-500 text-sm mt-1"
+                                >
+                                    {{ deleteForm.errors.date_before }}
+                                </div>
                             </div>
                         </div>
 
@@ -229,7 +334,11 @@ const bulkDelete = () => {
                     <h2 class="text-lg font-medium mb-4">
                         Generar Nuevos Códigos
                     </h2>
-                    <form @submit.prevent="generateCodes" class="flex gap-4">
+                    <form
+                        @submit.prevent="generateCodes"
+                        class="flex gap-4"
+                        novalidate
+                    >
                         <!-- relacionar con una campaña -->
                         <div>
                             <label
@@ -239,6 +348,9 @@ const bulkDelete = () => {
                             <select
                                 v-model="form.campaign_id"
                                 class="mt-1 block w-full rounded-md border-gray-300"
+                                :class="{
+                                    'border-red-500': form.errors.campaign_id,
+                                }"
                                 required
                             >
                                 <option value="">Seleccione una campaña</option>
@@ -269,7 +381,16 @@ const bulkDelete = () => {
                                 min="1"
                                 max="100"
                                 class="mt-1 block w-24 rounded-md border-gray-300"
+                                :class="{
+                                    'border-red-500': form.errors.quantity,
+                                }"
                             />
+                            <div
+                                v-if="form.errors.quantity"
+                                class="text-red-500 text-sm mt-1"
+                            >
+                                {{ form.errors.quantity }}
+                            </div>
                         </div>
                         <div>
                             <label
@@ -280,7 +401,16 @@ const bulkDelete = () => {
                                 type="date"
                                 v-model="form.expires_at"
                                 class="mt-1 block rounded-md border-gray-300"
+                                :class="{
+                                    'border-red-500': form.errors.expires_at,
+                                }"
                             />
+                            <div
+                                v-if="form.errors.expires_at"
+                                class="text-red-500 text-sm mt-1"
+                            >
+                                {{ form.errors.expires_at }}
+                            </div>
                         </div>
                         <button
                             type="submit"

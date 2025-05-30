@@ -50,7 +50,8 @@ class PrizeCodeController extends Controller
         return Inertia::render('Admin/PrizeCodes', [
             'codes' => $codes,
             'filters' => $request->only(['search']),
-            'campaigns' => $campaigns
+            'campaigns' => $campaigns,
+            'message' => session('message'),
         ]);
     }
 
@@ -70,8 +71,12 @@ class PrizeCodeController extends Controller
                 'expires_at' => $request->expires_at
             ]);
         });
+        session()->flash('message', [
+            'type' => 'success',
+            'text' => "{$codes->count()} códigos generados exitosamente"
+        ]);
 
-        return back()->with('success', "{$codes->count()} códigos generados exitosamente");
+        return back();
     }
 
     public function verifyCode(Request $request)
