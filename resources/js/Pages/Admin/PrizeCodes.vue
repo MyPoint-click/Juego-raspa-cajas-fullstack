@@ -83,6 +83,7 @@ const deleteForm = useForm({
     quantity: 1,
     status: "all", // 'all', 'unused', 'viewed', 'used'
     date_before: "", // opcional, para filtrar por fecha
+    campaign_id: "", // opcional, para filtrar por campaña
 });
 
 const bulkDelete = () => {
@@ -136,7 +137,7 @@ const bulkDelete = () => {
                     </form>
                 </div> -->
 
-                <!-- Formulario de generación -->
+                <!-- Formulario de eliminación -->
                 <div
                     class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 mb-6"
                 >
@@ -174,6 +175,26 @@ const bulkDelete = () => {
                                     <option value="unused">Sin usar</option>
                                     <option value="viewed">Visualizados</option>
                                     <option value="used">Usados</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-sm font-medium text-gray-700"
+                                >
+                                    Campaña
+                                </label>
+                                <select
+                                    v-model="deleteForm.campaign_id"
+                                    class="mt-1 block w-full rounded-md border-gray-300"
+                                >
+                                    <option value="">Todas las campañas</option>
+                                    <option
+                                        v-for="campaign in props.campaigns"
+                                        :key="campaign.id"
+                                        :value="campaign.id"
+                                    >
+                                        {{ campaign.name }}
+                                    </option>
                                 </select>
                             </div>
                             <div>

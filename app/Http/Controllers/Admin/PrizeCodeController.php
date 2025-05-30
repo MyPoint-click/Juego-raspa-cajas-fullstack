@@ -26,7 +26,7 @@ class PrizeCodeController extends Controller
                 });
             })
             ->latest()
-            ->paginate(5)
+            ->paginate(10)
             ->through(function ($code) {
                 return [
                     'id' => $code->id,
@@ -121,6 +121,7 @@ class PrizeCodeController extends Controller
             'quantity' => 'required|integer|min:1',
             'status' => 'required|in:all,unused,viewed,used',
             'date_before' => 'nullable|date',
+            'campaign_id' => 'nullable|exists:campaigns,id',
         ]);
 
         $query = PrizeCode::query();
@@ -134,6 +135,12 @@ class PrizeCodeController extends Controller
         if ($request->date_before) {
             $query->whereDate('expires_at', $request->date_before);
         }
+
+        // Filtrar por campaña si se especificó
+        if ($request->campaign_id) {
+            $query->where('campaign_id', $request->campaign_id);
+        }
+
 
         // Obtener la cantidad de registros que se eliminarán
         $codesCount = $query->count();
