@@ -57,13 +57,13 @@ class PrizeCodeController extends Controller
 
     public function store(Request $request)
     {
-        try {
-            $request->validate([
-                'campaign_id' => 'required|exists:campaigns,id',
-                'quantity' => 'required|integer|min:1|max:100',
-                'expires_at' => 'nullable|date|after:today'
-            ]);
 
+        $request->validate([
+            'campaign_id' => 'required|exists:campaigns,id',
+            'quantity' => 'required|integer|min:1|max:100',
+            'expires_at' => 'nullable|date|after:today'
+        ]);
+        try {
             $codes = collect()->pad($request->quantity, null)->map(function () use ($request) {
                 return PrizeCode::create([
                     'campaign_id' => $request->campaign_id,
@@ -169,14 +169,14 @@ class PrizeCodeController extends Controller
     // Método para eliminar códigos expirados
     public function bulkDelete(Request $request)
     {
-        try {
-            $request->validate([
-                'quantity' => 'required|integer|min:1',
-                'status' => 'required|in:all,unused,viewed,used',
-                'date_before' => 'nullable|date',
-                'campaign_id' => 'nullable|exists:campaigns,id',
-            ]);
 
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
+            'status' => 'required|in:all,unused,viewed,used',
+            'date_before' => 'nullable|date',
+            'campaign_id' => 'nullable|exists:campaigns,id',
+        ]);
+        try {
             $query = PrizeCode::query();
 
             // Filtrar por estado si no es 'all'
