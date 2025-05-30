@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\CampaignController;
 use App\Http\Controllers\Admin\PrizeCodeController;
+use App\Models\Campaign;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
@@ -12,4 +14,6 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     Route::post('/prize-codes/bulk-delete', [PrizeCodeController::class, 'bulkDelete'])
         ->name('prize-codes.bulk-delete');
+
+    Route::resource('/campaigns', CampaignController::class);
 });
