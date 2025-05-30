@@ -57,24 +57,32 @@ class PrizeCodeController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'campaign_id' => 'required|exists:campaigns,id',
-            'quantity' => 'required|integer|min:1|max:100',
-            'expires_at' => 'nullable|date|after:today'
-        ]);
-
-        $codes = collect()->pad($request->quantity, null)->map(function () use ($request) {
-            return PrizeCode::create([
-                'campaign_id' => $request->campaign_id,
-                'code' => strtoupper(Str::random(8)),
-                'status' => 'unused',
-                'expires_at' => $request->expires_at
+        try {
+            $request->validate([
+                'campaign_id' => 'required|exists:campaigns,id',
+                'quantity' => 'required|integer|min:1|max:100',
+                'expires_at' => 'nullable|date|after:today'
             ]);
-        });
-        session()->flash('message', [
-            'type' => 'success',
-            'text' => "{$codes->count()} códigos generados exitosamente"
-        ]);
+
+            $codes = collect()->pad($request->quantity, null)->map(function () use ($request) {
+                return PrizeCode::create([
+                    'campaign_id' => $request->campaign_id,
+                    'code' => strtoupper(Str::random(8)),
+                    'status' => 'unused',
+                    'expires_at' => $request->expires_at
+                ]);
+            });
+
+            session()->flash('message', [
+                'type' => 'success',
+                'text' => "{$codes->count()} códigos generados exitosamente"
+            ]);
+        } catch (\Exception $e) {
+            session()->flash('message', [
+                'type' => 'error',
+                'text' => 'Error al generar los códigos: ' . $e->getMessage()
+            ]);
+        }
 
         return back();
     }
@@ -88,75 +96,128 @@ class PrizeCodeController extends Controller
         $code = PrizeCode::where('code', $request->code)->first();
 
         if (!$code) {
-            return back()->with('error', 'Código no encontrado');
+            session()->flash('message', [
+                'type' => 'error',
+                'text' => 'Código no encontrado'
+            ]);
+            return back();
         }
 
         if ($code->status === 'unused') {
-            return back()->with('error', 'Este código aún no ha sido visualizado');
+            session()->flash('message', [
+                'type' => 'error',
+                'text' => 'Este código aún no ha sido visualizado'
+            ]);
+            return back();
         }
 
         if ($code->status === 'used') {
-            return back()->with('error', 'Este código ya ha sido utilizado');
+            session()->flash('message', [
+                'type' => 'error',
+                'text' => 'Este código ya ha sido utilizado'
+            ]);
+            return back();
         }
 
         // Solo verificar expiración si no está permitido verificar expirados
         if (!$request->allow_expired && $code->status === 'viewed' && $code->expires_at && $code->expires_at < now()) {
-            return back()->with('error', 'Este código ha expirado y no puede ser verificado');
+            session()->flash('message', [
+                'type' => 'error',
+                'text' => 'Este código ha expirado y no puede ser verificado'
+            ]);
+            return back();
         }
 
         // Si el código está en estado 'viewed', actualizarlo a 'used'
-        $code->update([
-            'status' => 'used',
-            'used_at' => now()
-        ]);
+        try {
+            $code->update([
+                'status' => 'used',
+                'used_at' => now()
+            ]);
 
-        return back()->with('success', 'Código verificado y marcado como usado exitosamente');
+            session()->flash('message', [
+                'type' => 'success',
+                'text' => 'Código verificado y marcado como usado exitosamente'
+            ]);
+        } catch (\Exception $e) {
+            session()->flash('message', [
+                'type' => 'error',
+                'text' => 'Error al verificar el código'
+            ]);
+        }
+
+        return back();
     }
 
     public function destroy(PrizeCode $prizeCode)
     {
-        $prizeCode->delete();
-        return back()->with('success', 'Código eliminado exitosamente');
+        try {
+            $prizeCode->delete();
+            session()->flash('message', [
+                'type' => 'success',
+                'text' => "Código {$prizeCode->code} eliminado exitosamente"
+            ]);
+        } catch (\Exception $e) {
+            session()->flash('message', [
+                'type' => 'error',
+                'text' => 'Error al eliminar el código'
+            ]);
+        }
+        return back();
     }
 
     // Método para eliminar códigos expirados
     public function bulkDelete(Request $request)
     {
-        $request->validate([
-            'quantity' => 'required|integer|min:1',
-            'status' => 'required|in:all,unused,viewed,used',
-            'date_before' => 'nullable|date',
-            'campaign_id' => 'nullable|exists:campaigns,id',
-        ]);
+        try {
+            $request->validate([
+                'quantity' => 'required|integer|min:1',
+                'status' => 'required|in:all,unused,viewed,used',
+                'date_before' => 'nullable|date',
+                'campaign_id' => 'nullable|exists:campaigns,id',
+            ]);
 
-        $query = PrizeCode::query();
+            $query = PrizeCode::query();
 
-        // Filtrar por estado si no es 'all'
-        if ($request->status !== 'all') {
-            $query->where('status', $request->status);
+            // Filtrar por estado si no es 'all'
+            if ($request->status !== 'all') {
+                $query->where('status', $request->status);
+            }
+
+            // Filtrar por fecha si se especificó
+            if ($request->date_before) {
+                $query->whereDate('expires_at', $request->date_before);
+            }
+
+            // Filtrar por campaña si se especificó
+            if ($request->campaign_id) {
+                $query->where('campaign_id', $request->campaign_id);
+            }
+
+
+            // Obtener la cantidad de registros que se eliminarán
+            $codesCount = $query->count();
+
+            if ($codesCount === 0) {
+                session()->flash('message', [
+                    'type' => 'error',
+                    'text' => 'No se encontraron códigos que cumplan con los criterios especificados'
+                ]);
+                return back();
+            }
+
+            // Limitar la cantidad a eliminar según lo especificado
+            $actuallyDeleted = $query->take($request->quantity)->delete();
+            session()->flash('message', [
+                'type' => 'success',
+                'text' => "Se eliminaron {$actuallyDeleted} códigos exitosamente"
+            ]);
+        } catch (\Exception $e) {
+            session()->flash('message', [
+                'type' => 'error',
+                'text' => 'Error al eliminar los códigos: ' . $e->getMessage()
+            ]);
         }
-
-        // Filtrar por fecha si se especificó
-        if ($request->date_before) {
-            $query->whereDate('expires_at', $request->date_before);
-        }
-
-        // Filtrar por campaña si se especificó
-        if ($request->campaign_id) {
-            $query->where('campaign_id', $request->campaign_id);
-        }
-
-
-        // Obtener la cantidad de registros que se eliminarán
-        $codesCount = $query->count();
-
-        if ($codesCount === 0) {
-            return back()->with('error', 'No se encontraron códigos que cumplan con los criterios especificados');
-        }
-
-        // Limitar la cantidad a eliminar según lo especificado
-        $actuallyDeleted = $query->take($request->quantity)->delete();
-
-        return back()->with('success', "Se eliminaron {$actuallyDeleted} códigos exitosamente");
+        return back();
     }
 }
