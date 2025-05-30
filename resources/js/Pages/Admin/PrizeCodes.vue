@@ -4,10 +4,16 @@ import { ref, watch } from "vue";
 import { Head, useForm, router, Link } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import debounce from "lodash/debounce";
+import Campaigns from "./Campaigns.vue";
 
 const props = defineProps({
     codes: Object,
     filters: Object,
+    campaigns: {
+        // Cambiado de Campaigns a campaigns
+        type: Array,
+        required: true,
+    },
 });
 
 // Formulario de búsqueda
@@ -27,6 +33,7 @@ watch(
 
 // Formulario de generación de códigos
 const form = useForm({
+    campaign_id: "",
     quantity: 1,
     expires_at: "",
 });
@@ -202,6 +209,34 @@ const bulkDelete = () => {
                         Generar Nuevos Códigos
                     </h2>
                     <form @submit.prevent="generateCodes" class="flex gap-4">
+                        <!-- relacionar con una campaña -->
+                        <div>
+                            <label
+                                class="block text-sm font-medium text-gray-700"
+                                >Campaña</label
+                            >
+                            <select
+                                v-model="form.campaign_id"
+                                class="mt-1 block w-full rounded-md border-gray-300"
+                                required
+                            >
+                                <option value="">Seleccione una campaña</option>
+                                <option
+                                    v-for="campaign in props.campaigns"
+                                    :key="campaign.id"
+                                    :value="campaign.id"
+                                >
+                                    {{ campaign.name }}
+                                </option>
+                            </select>
+                            <div
+                                v-if="form.errors.campaign_id"
+                                class="text-red-500 text-sm mt-1"
+                            >
+                                {{ form.errors.campaign_id }}
+                            </div>
+                        </div>
+                        <!-- .relacionar con una campaña -->
                         <div>
                             <label
                                 class="block text-sm font-medium text-gray-700"
@@ -236,7 +271,7 @@ const bulkDelete = () => {
                     </form>
                 </div>
 
-                <!-- Agregar el switch antes de la tabla -->
+                <!-- Agregar el switch -->
                 <div class="mb-4 flex items-center">
                     <label
                         class="relative inline-flex items-center cursor-pointer"
@@ -269,6 +304,11 @@ const bulkDelete = () => {
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
                                 >
                                     Estado
+                                </th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+                                >
+                                    Campaña
                                 </th>
                                 <th
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
@@ -313,6 +353,17 @@ const bulkDelete = () => {
                                                 ? "Canjeado"
                                                 : code.status
                                         }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span
+                                        v-if="code.campaign"
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                                    >
+                                        {{ code.campaign.name }}
+                                    </span>
+                                    <span v-else class="text-gray-400 text-sm">
+                                        Sin campaña
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">

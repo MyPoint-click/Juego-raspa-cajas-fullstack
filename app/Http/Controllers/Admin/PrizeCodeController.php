@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Campaign;
 use App\Models\PrizeCode;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -13,11 +14,15 @@ class PrizeCodeController extends Controller
     public function index(Request $request)
     {
         $codes = PrizeCode::query()
+            ->with('campaign')
             ->when($request->search, function ($query, $search) {
                 $query->where(function ($query) use ($search) {
                     $query->where('code', 'like', "%{$search}%")
                         ->orWhere('status', 'like', "%{$search}%")
-                        ->orWhere('expires_at', 'like', "%{$search}%");
+                        ->orWhere('expires_at', 'like', "%{$search}%")
+                        ->orWhereHas('campaign', function ($q) use ($search) {
+                            $q->where('name', 'like', "%{$search}%");
+                        });
                 });
             })
             ->latest()
@@ -27,6 +32,10 @@ class PrizeCodeController extends Controller
                     'id' => $code->id,
                     'code' => $code->code,
                     'status' => $code->status,
+                    'campaign' => $code->campaign ? [
+                        'id' => $code->campaign->id,
+                        'name' => $code->campaign->name
+                    ] : null,
                     'session_expires_at' => $code->session_expires_at ? $code->session_expires_at->format('d/m/Y-H:i') : null,
                     'expires_at' => $code->expires_at ? $code->expires_at->format('d/m/Y') : null,
                     'created_at' => $code->created_at->format('d/m/Y'),
@@ -34,21 +43,28 @@ class PrizeCodeController extends Controller
             })
             ->withQueryString();
 
+        $campaigns = Campaign::where('is_active', true)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
         return Inertia::render('Admin/PrizeCodes', [
             'codes' => $codes,
-            'filters' => $request->only(['search'])
+            'filters' => $request->only(['search']),
+            'campaigns' => $campaigns
         ]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
+            'campaign_id' => 'required|exists:campaigns,id',
             'quantity' => 'required|integer|min:1|max:100',
             'expires_at' => 'nullable|date|after:today'
         ]);
 
         $codes = collect()->pad($request->quantity, null)->map(function () use ($request) {
             return PrizeCode::create([
+                'campaign_id' => $request->campaign_id,
                 'code' => strtoupper(Str::random(8)),
                 'status' => 'unused',
                 'expires_at' => $request->expires_at
