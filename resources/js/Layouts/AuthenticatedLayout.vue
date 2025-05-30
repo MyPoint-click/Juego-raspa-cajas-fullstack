@@ -42,6 +42,14 @@ const showingNavigationDropdown = ref(false);
                                 >
                                     Generar Códigos
                                 </NavLink>
+                                <NavLink
+                                    :href="route('admin.campaigns.index')"
+                                    :active="
+                                        route().current('admin.campaigns.index')
+                                    "
+                                >
+                                    Gestionar Campañas
+                                </NavLink>
                             </div>
                         </div>
 

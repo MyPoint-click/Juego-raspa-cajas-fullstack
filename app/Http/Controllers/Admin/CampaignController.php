@@ -36,7 +36,8 @@ class CampaignController extends Controller
 
         return Inertia::render('Admin/Campaigns', [
             'campaigns' => $campaigns,
-            'filters' => $request->only(['search'])
+            'filters' => $request->only(['search']),
+            'message' => session('message')
         ]);
     }
 
@@ -50,9 +51,18 @@ class CampaignController extends Controller
             'ends_at' => 'nullable|date|after:starts_at',
         ]);
 
-        Campaign::create($validated);
+        try {
+            Campaign::create($validated);
 
-        return back()->with('success', 'Campaña creada exitosamente');
+            session()->flash('message', [
+                'type' => 'success',
+                'text' => 'Campaña creada exitosamente'
+            ]);
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Error al crear la campaña']);
+        }
+
+        return back();
     }
 
     public function update(Request $request, Campaign $campaign)
@@ -65,19 +75,44 @@ class CampaignController extends Controller
             'ends_at' => 'nullable|date|after:starts_at',
         ]);
 
-        $campaign->update($validated);
+        try {
+            $campaign->update($validated);
 
-        return back()->with('success', 'Campaña actualizada exitosamente');
+            session()->flash('message', [
+                'type' => 'success',
+                'text' => 'Campaña actualizada exitosamente'
+            ]);
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Error al actualizar la campaña']);
+        }
+
+        return back();
     }
 
     public function destroy(Campaign $campaign)
     {
-        // Verificar si tiene códigos asociados
-        if ($campaign->prizeCodes()->count() > 0) {
-            return back()->with('error', 'No se puede eliminar una campaña que tiene códigos asociados');
+        try {
+            if ($campaign->prizeCodes()->count() > 0) {
+                session()->flash('message', [
+                    'type' => 'error',
+                    'text' => 'No se puede eliminar una campaña que tiene códigos asociados'
+                ]);
+                return back();
+            }
+
+            $campaign->delete();
+
+            session()->flash('message', [
+                'type' => 'success',
+                'text' => 'Campaña eliminada exitosamente'
+            ]);
+        } catch (\Exception $e) {
+            session()->flash('message', [
+                'type' => 'error',
+                'text' => 'Error al eliminar la campaña: ' . $e->getMessage()
+            ]);
         }
 
-        $campaign->delete();
-        return back()->with('success', 'Campaña eliminada exitosamente');
+        return back();
     }
 }

@@ -1,12 +1,13 @@
 <script setup>
 import { ref, watch } from "vue";
-import { Head, useForm, router } from "@inertiajs/vue3";
+import { Head, useForm, router, usePage } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import debounce from "lodash/debounce";
 
 const props = defineProps({
     campaigns: Object,
     filters: Object,
+    message: Object,
 });
 
 // Búsqueda
@@ -21,6 +22,24 @@ watch(
             { preserveState: true, preserveScroll: true }
         );
     }, 300)
+);
+
+// Show messages exit and error
+const page = usePage();
+const showMessage = ref(true);
+
+// Watch para manejar los mensajes flash
+watch(
+    () => page.props.message,
+    (newMessage) => {
+        if (newMessage) {
+            showMessage.value = true;
+            setTimeout(() => {
+                showMessage.value = false;
+            }, 5000);
+        }
+    },
+    { immediate: true }
 );
 
 // Form para crear/editar campaña
@@ -60,12 +79,20 @@ const submit = () => {
                 showModal.value = false;
                 form.reset();
             },
+            onError: () => {
+                // El modal se mantiene abierto cuando hay errores
+                console.log("Errores de validación:", form.errors);
+            },
         });
     } else {
         form.post(route("admin.campaigns.store"), {
             onSuccess: () => {
                 showModal.value = false;
                 form.reset();
+            },
+            onError: () => {
+                // El modal se mantiene abierto cuando hay errores
+                console.log("Errores de validación:", form.errors);
             },
         });
     }
@@ -84,6 +111,46 @@ const deleteCampaign = (id) => {
     <AuthenticatedLayout>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <!-- Mensajes de éxito y error -->
+                <TransitionGroup name="fade">
+                    <div
+                        v-if="$page.props.message && showMessage"
+                        class="mb-4"
+                        key="message"
+                    >
+                        <div
+                            :class="{
+                                'bg-green-100 border-green-400 text-green-700':
+                                    $page.props.message.type === 'success',
+                                'bg-red-100 border-red-400 text-red-700':
+                                    $page.props.message.type === 'error',
+                            }"
+                            class="border px-4 py-3 rounded relative"
+                            role="alert"
+                        >
+                            <span class="block sm:inline">{{
+                                $page.props.message.text
+                            }}</span>
+                            <button
+                                @click="showMessage = false"
+                                class="absolute top-0 bottom-0 right-0 px-4 py-3"
+                            >
+                                <svg
+                                    class="fill-current h-6 w-6"
+                                    role="button"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20"
+                                >
+                                    <title>Cerrar</title>
+                                    <path
+                                        d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"
+                                    />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </TransitionGroup>
+
                 <!-- Barra superior -->
                 <div class="mb-6 flex justify-between items-center">
                     <input
@@ -213,6 +280,7 @@ const deleteCampaign = (id) => {
                             type="text"
                             v-model="form.name"
                             class="mt-1 block w-full rounded-md border-gray-300"
+                            :class="{ 'border-red-500': form.errors.name }"
                         />
                         <div
                             v-if="form.errors.name"
@@ -228,9 +296,12 @@ const deleteCampaign = (id) => {
                         <textarea
                             v-model="form.description"
                             class="mt-1 block w-full rounded-md border-gray-300"
+                            :class="{
+                                'border-red-500': form.errors.description,
+                            }"
                         />
                         <div
-                            v-if="form.errors.name"
+                            v-if="form.errors.description"
                             class="text-red-500 text-sm mt-1"
                         >
                             {{ form.errors.description }}
@@ -241,13 +312,14 @@ const deleteCampaign = (id) => {
                             type="checkbox"
                             v-model="form.is_active"
                             class="rounded border-gray-300 text-primary-600"
+                            :class="{ 'border-red-500': form.errors.is_active }"
                         />
                         <label class="ml-2 block text-sm text-gray-900">
                             Activa
                         </label>
                         <div
-                            v-if="form.errors.name"
-                            class="text-red-500 text-sm mt-1"
+                            v-if="form.errors.is_active"
+                            class="text-red-500 text-sm ml-2"
                         >
                             {{ form.errors.is_active }}
                         </div>
@@ -260,9 +332,10 @@ const deleteCampaign = (id) => {
                             type="date"
                             v-model="form.starts_at"
                             class="mt-1 block w-full rounded-md border-gray-300"
+                            :class="{ 'border-red-500': form.errors.starts_at }"
                         />
                         <div
-                            v-if="form.errors.name"
+                            v-if="form.errors.starts_at"
                             class="text-red-500 text-sm mt-1"
                         >
                             {{ form.errors.starts_at }}
@@ -276,9 +349,10 @@ const deleteCampaign = (id) => {
                             type="date"
                             v-model="form.ends_at"
                             class="mt-1 block w-full rounded-md border-gray-300"
+                            :class="{ 'border-red-500': form.errors.ends_at }"
                         />
                         <div
-                            v-if="form.errors.name"
+                            v-if="form.errors.ends_at"
                             class="text-red-500 text-sm mt-1"
                         >
                             {{ form.errors.ends_at }}
