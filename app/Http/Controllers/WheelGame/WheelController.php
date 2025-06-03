@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\WheelGame;
 
 use App\Http\Controllers\Controller;
+use App\Models\Campaign;
 use App\Models\PrizeCode;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -56,7 +57,19 @@ class WheelController extends Controller
             ]);
         }
 
+        // Obtener la campaña activa
+        $currentCampaign = Campaign::where('is_current', true)
+            ->where('is_active', true)
+            ->first();
+
+        if (!$currentCampaign) {
+            return response()->json([
+                'error' => 'No hay una campaña activa en este momento.'
+            ], 404);
+        }
+
         $validCode = PrizeCode::where('status', 'unused')
+            ->where('campaign_id', $currentCampaign->id)
             ->whereNull('session_id')
             ->where(function ($query) {
                 $query->whereNull('expires_at')
@@ -65,7 +78,7 @@ class WheelController extends Controller
 
         if (!$validCode) {
             return response()->json([
-                'error' => 'No hay códigos disponibles. Por favor, contacta con el administrador.'
+                'error' => 'No hay códigos disponibles para la campaña actual.'
             ], 404);
         }
 
