@@ -210,7 +210,7 @@ const bulkDelete = () => {
                         class="space-y-4"
                         novalidate
                     >
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div>
                                 <label
                                     class="block text-sm font-medium text-gray-700"
@@ -501,7 +501,7 @@ const bulkDelete = () => {
                                                 : code.status === "viewed"
                                                 ? "Visualizado"
                                                 : code.status === "used"
-                                                ? "Canjeado"
+                                                ? "Usado"
                                                 : code.status
                                         }}
                                     </span>
@@ -509,7 +509,7 @@ const bulkDelete = () => {
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span
                                         v-if="code.campaign"
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-base font-medium bg-blue-100 text-blue-800"
                                     >
                                         {{ code.campaign.name }}
                                     </span>
