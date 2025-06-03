@@ -43,9 +43,10 @@ class PrizeCodeController extends Controller
             })
             ->withQueryString();
 
-        $campaigns = Campaign::where('is_active', true)
+        $campaigns = Campaign::select(['id', 'name', 'description', 'is_current'])
+            ->where('is_active', true)
             ->orderBy('name')
-            ->get(['id', 'name']);
+            ->get();
 
         return Inertia::render('Admin/PrizeCodes', [
             'codes' => $codes,

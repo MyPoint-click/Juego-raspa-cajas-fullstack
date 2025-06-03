@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 
 import { Head, useForm, router, Link, usePage } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
@@ -114,6 +114,11 @@ const bulkDelete = () => {
         onSuccess: () => deleteForm.reset(),
     });
 };
+
+// Computed para obtener la campaña actual
+const currentCampaign = computed(() => {
+    return props.campaigns.find((campaign) => campaign.is_current);
+});
 </script>
 
 <template>
@@ -202,7 +207,9 @@ const bulkDelete = () => {
                 <div
                     class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 mb-6"
                 >
-                    <h2 class="text-lg font-medium mb-4 text-gray-900">
+                    <h2
+                        class="text-2xl text-center font-medium mb-4 text-gray-900"
+                    >
                         Eliminación Masiva de Códigos
                     </h2>
                     <form
@@ -329,14 +336,14 @@ const bulkDelete = () => {
                             </button>
                         </div>
                     </form>
-
+                    <div class="mt-8 pt-8 border-t border-gray-200"></div>
                     <!-- Generar Códigos -->
-                    <h2 class="text-lg font-medium mb-4">
+                    <h2 class="text-2xl text-center font-medium mb-4">
                         Generar Nuevos Códigos
                     </h2>
                     <form
                         @submit.prevent="generateCodes"
-                        class="flex gap-4"
+                        class="gap-4 flex items-center justify-center"
                         novalidate
                     >
                         <!-- relacionar con una campaña -->
@@ -369,6 +376,7 @@ const bulkDelete = () => {
                                 {{ form.errors.campaign_id }}
                             </div>
                         </div>
+
                         <!-- .relacionar con una campaña -->
                         <div>
                             <label
@@ -423,22 +431,49 @@ const bulkDelete = () => {
                 </div>
 
                 <!-- Agregar el switch -->
-                <div class="mb-4 flex items-center">
-                    <label
-                        class="relative inline-flex items-center cursor-pointer"
+                <div class="flex flex-col md:flex-row md:items-start md:gap-6">
+                    <div class="mb-4 flex items-center md:w-1/2">
+                        <label
+                            class="relative inline-flex items-center cursor-pointer"
+                        >
+                            <input
+                                type="checkbox"
+                                v-model="allowExpiredVerification"
+                                class="sr-only peer"
+                            />
+                            <div
+                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"
+                            ></div>
+                            <span
+                                class="ml-3 text-sm font-medium text-gray-900"
+                            >
+                                Permitir verificación de códigos expirados
+                            </span>
+                        </label>
+                    </div>
+                    <div
+                        class="flex flex-col md:flex-row md:items-start md:gap-6 ml-auto pb-4"
                     >
-                        <input
-                            type="checkbox"
-                            v-model="allowExpiredVerification"
-                            class="sr-only peer"
-                        />
+                        <h3 class="text-2xl font-medium text-gray-900 mb-2">
+                            Campaña Actual
+                        </h3>
                         <div
-                            class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"
-                        ></div>
-                        <span class="ml-3 text-sm font-medium text-gray-900">
-                            Permitir verificación de códigos expirados
-                        </span>
-                    </label>
+                            v-if="currentCampaign"
+                            class="flex items-center space-x-2"
+                        >
+                            <span
+                                class="px-3 py-1.5 text-lg font-semibold inline-block text-center bg-lime-500 text-white shadow-md"
+                            >
+                                {{ currentCampaign.name }}
+                            </span>
+                            <!-- <span class="text-gray-600">
+                            {{ currentCampaign.description }}
+                        </span> -->
+                        </div>
+                        <div v-else class="text-gray-500">
+                            No hay campaña establecida como actual
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Tabla de códigos -->

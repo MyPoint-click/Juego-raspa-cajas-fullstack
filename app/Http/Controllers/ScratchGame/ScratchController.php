@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\ScratchGame;
 
 use App\Http\Controllers\Controller;
+use App\Models\Campaign;
 use App\Models\PrizeCode;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -73,8 +74,21 @@ class ScratchController extends Controller
             ]);
         }
 
+
+        // Obtener la campaña activa
+        $currentCampaign = Campaign::where('is_current', true)
+            ->where('is_active', true)
+            ->first();
+
+        if (!$currentCampaign) {
+            return response()->json([
+                'error' => 'No hay una campaña activa en este momento.'
+            ], 404);
+        }
+
         // 2. Si no tiene código, buscar uno nuevo
         $validCode = PrizeCode::where('status', 'unused')
+            ->where('campaign_id', $currentCampaign->id)
             ->whereNull('session_id')
             ->where(function ($query) {
                 $query->whereNull('expires_at')
@@ -83,7 +97,7 @@ class ScratchController extends Controller
 
         if (!$validCode) {
             return response()->json([
-                'error' => 'No hay códigos disponibles.'
+                'error' => 'No hay códigos disponibles para la campaña actual.'
             ], 404);
         }
 

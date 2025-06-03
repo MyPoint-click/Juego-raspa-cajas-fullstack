@@ -16,4 +16,6 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         ->name('prize-codes.bulk-delete');
 
     Route::resource('/campaigns', CampaignController::class);
+    Route::post('/campaigns/{campaign}/set-current', [CampaignController::class, 'setCurrent'])
+        ->name('campaigns.set-current');
 });

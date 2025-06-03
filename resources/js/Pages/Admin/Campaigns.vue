@@ -103,6 +103,13 @@ const deleteCampaign = (id) => {
         router.delete(route("admin.campaigns.destroy", id));
     }
 };
+
+// Confirmación parar establecer campaña actual
+const setCurrent = (id) => {
+    if (confirm("¿Establecer esta campaña como la actual?")) {
+        router.post(route("admin.campaigns.set-current", id));
+    }
+};
 </script>
 
 <template>
@@ -237,6 +244,21 @@ const deleteCampaign = (id) => {
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     {{ campaign.codes_count }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div
+                                        v-if="campaign.is_current"
+                                        class="px-3 py-1.5 rounded-full text-sm font-semibold inline-block text-center transition-all duration-200 bg-green-500 text-white shadow-md"
+                                    >
+                                        Campaña Actual
+                                    </div>
+                                    <button
+                                        v-else
+                                        @click="setCurrent(campaign.id)"
+                                        class="px-3 py-1.5 rounded-full text-sm font-semibold inline-block text-center transition-all duration-200 bg-blue-500 text-white shadow-md hover:bg-blue-600"
+                                    >
+                                        Establecer como Actual
+                                    </button>
                                 </td>
                                 <td
                                     class="px-6 py-4 whitespace-nowrap space-x-2"
