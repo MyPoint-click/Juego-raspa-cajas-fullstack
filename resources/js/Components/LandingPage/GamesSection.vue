@@ -23,6 +23,16 @@ const games = ref([
         rating: 5.0,
         gameUrl: "/scratch-game",
     },
+    {
+        id: 3,
+        title: "Ruleta de Premios: ¡Gira y Gana Clientes!",
+        description:
+            "Crea expectación y recompensa la lealtad de forma dinámica. La Ruleta de Premios convierte cada interacción en un momento de diversión y oportunidad. Ideal para sorteos, eventos especiales o para premiar la primera compra, incentivando la participación y el deseo de volver a girar la ruleta de tu marca.",
+        imageUrl: "/images/landing-page/game-section/wheel-game.png",
+        genre: "Fidelización Instantánea",
+        rating: 5.0,
+        gameUrl: "/wheel-game",
+    },
 ]);
 
 const genres = ref(["All", "Interactive", "Instant Win"]);
