@@ -15,6 +15,9 @@ class PrizeCodeController extends Controller
     {
         $codes = PrizeCode::query()
             ->with('campaign')
+            ->whereHas('campaign', function ($query) {
+                $query->where('is_active', true);
+            })
             ->when($request->search, function ($query, $search) {
                 $query->where(function ($query) use ($search) {
                     $query->where('code', 'like', "%{$search}%")

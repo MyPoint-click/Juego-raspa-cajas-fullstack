@@ -124,7 +124,7 @@ class CampaignController extends Controller
             Campaign::where('is_current', true)->update(['is_current' => false]);
 
             // Establecer la nueva campaña como actual
-            $campaign->update(['is_current' => true]);
+            $campaign->update(['is_current' => true, 'is_active' => true]);
 
             session()->flash('message', [
                 'type' => 'success',
