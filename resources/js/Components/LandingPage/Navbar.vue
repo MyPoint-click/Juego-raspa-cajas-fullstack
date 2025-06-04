@@ -103,25 +103,25 @@ const toggleMobileMenu = () => {
                         href="#hero"
                         class="nav-link text-gray-300 hover:text-white px-4 py-2"
                         @click="isMobileMenuOpen = false"
-                        >Home</a
+                        >Inicio</a
                     >
                     <a
                         href="#games"
                         class="nav-link text-gray-300 hover:text-white px-4 py-2"
                         @click="isMobileMenuOpen = false"
-                        >Games</a
+                        >Juegos</a
                     >
                     <a
                         href="#how-it-works"
                         class="nav-link text-gray-300 hover:text-white px-4 py-2"
                         @click="isMobileMenuOpen = false"
-                        >How It Works</a
+                        >¿Cómo funciona?</a
                     >
                     <a
                         href="#why"
                         class="nav-link text-gray-300 hover:text-white px-4 py-2"
                         @click="isMobileMenuOpen = false"
-                        >How It Works</a
+                        >¿Por qué elegirnos?</a
                     >
                 </nav>
             </div>
