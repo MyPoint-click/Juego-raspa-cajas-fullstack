@@ -11,12 +11,14 @@ class Campaign extends Model
         'name',
         'description',
         'is_active',
+        'is_current',
         'starts_at',
         'ends_at'
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'is_current' => 'boolean',
         'starts_at' => 'datetime',
         'ends_at' => 'datetime',
     ];

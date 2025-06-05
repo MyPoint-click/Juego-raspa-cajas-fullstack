@@ -26,6 +26,7 @@ class CampaignController extends Controller
                     'name' => $campaign->name,
                     'description' => $campaign->description,
                     'is_active' => $campaign->is_active,
+                    'is_current' => $campaign->is_current,
                     'starts_at' => $campaign->starts_at ? $campaign->starts_at->format('Y-m-d') : null,
                     'ends_at' => $campaign->ends_at ? $campaign->ends_at->format('Y-m-d') : null,
                     'codes_count' => $campaign->prizeCodes()->count(),
@@ -110,6 +111,29 @@ class CampaignController extends Controller
             session()->flash('message', [
                 'type' => 'error',
                 'text' => 'Error al eliminar la campaña: ' . $e->getMessage()
+            ]);
+        }
+
+        return back();
+    }
+
+    public function setCurrent(Campaign $campaign)
+    {
+        try {
+            // Primero, desactivar todas las campañas actuales
+            Campaign::where('is_current', true)->update(['is_current' => false]);
+
+            // Establecer la nueva campaña como actual
+            $campaign->update(['is_current' => true, 'is_active' => true]);
+
+            session()->flash('message', [
+                'type' => 'success',
+                'text' => "La campaña '{$campaign->name}' ha sido establecida como actual"
+            ]);
+        } catch (\Exception $e) {
+            session()->flash('message', [
+                'type' => 'error',
+                'text' => 'Error al establecer la campaña actual'
             ]);
         }
 

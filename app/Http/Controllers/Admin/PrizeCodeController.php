@@ -15,6 +15,9 @@ class PrizeCodeController extends Controller
     {
         $codes = PrizeCode::query()
             ->with('campaign')
+            ->whereHas('campaign', function ($query) {
+                $query->where('is_active', true);
+            })
             ->when($request->search, function ($query, $search) {
                 $query->where(function ($query) use ($search) {
                     $query->where('code', 'like', "%{$search}%")
@@ -43,9 +46,10 @@ class PrizeCodeController extends Controller
             })
             ->withQueryString();
 
-        $campaigns = Campaign::where('is_active', true)
+        $campaigns = Campaign::select(['id', 'name', 'description', 'is_current'])
+            ->where('is_active', true)
             ->orderBy('name')
-            ->get(['id', 'name']);
+            ->get();
 
         return Inertia::render('Admin/PrizeCodes', [
             'codes' => $codes,
