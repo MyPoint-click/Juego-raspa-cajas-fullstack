@@ -173,7 +173,7 @@ const currentCampaign = computed(() => {
                         type="text"
                         v-model="search"
                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-                        placeholder="Buscar por código o estado..."
+                        placeholder="Buscar por código.."
                     />
                 </div>
                 <!-- Formulario de verificación -->
