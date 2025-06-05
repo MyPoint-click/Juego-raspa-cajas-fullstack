@@ -8,6 +8,8 @@ use App\Models\PrizeCode;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Mail; // Importa la fachada Mail
+use App\Mail\AdminPrizeCodeNotification; // Importa tu Mailable
 
 class WheelController extends Controller
 {
@@ -88,6 +90,20 @@ class WheelController extends Controller
             'session_id' => $sessionId,
             'session_expires_at' => Carbon::now()->addMinutes(1)
         ]);
+
+        // --- AQUI SE ENVIA EL EMAIL EN COLA ---
+        // $adminEmail = config('app.admin_email'); // Obtiene el correo del admin desde la configuración
+        $adminEmail = 'faviogarciaguzmam@gmail.com';
+
+        if ($adminEmail) { // Asegúrate de que el correo del admin esté configurado
+            Mail::to($adminEmail)->queue(new AdminPrizeCodeNotification($validCode->code, $sessionId));
+            // 'queue()' envía el Mailable a la cola.
+            // Si usaras 'send()', se enviaría en primer plano.
+        } else {
+            return response()->json([
+                'error' => 'No se pudo enviar la notificación al administrador. Por favor, contacta con el soporte.'
+            ], 500);
+        }
 
         return response()->json([
             'code' => $validCode->code
