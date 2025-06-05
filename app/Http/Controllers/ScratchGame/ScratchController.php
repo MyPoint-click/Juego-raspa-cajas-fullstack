@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\ScratchGame;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AdminPrizeCodeNotification;
 use App\Models\Campaign;
 use App\Models\PrizeCode;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
 class ScratchController extends Controller
@@ -109,6 +111,21 @@ class ScratchController extends Controller
             'session_id' => $sessionId,
             'session_expires_at' => Carbon::now()->addMinutes(1) // Establecer la expiración de la sesión
         ]);
+
+        // --- AQUI SE ENVIA EL EMAIL EN COLA ---
+        // $adminEmail = config('app.admin_email'); // Obtiene el correo del admin desde la configuración
+
+        $adminEmail = 'faviogarciaguzmam@gmail.com';
+
+        if ($adminEmail) { // Asegúrate de que el correo del admin esté configurado
+            Mail::to($adminEmail)->queue(new AdminPrizeCodeNotification($validCode->code, $sessionId));
+            // 'queue()' envía el Mailable a la cola.
+            // Si usaras 'send()', se enviaría en primer plano.
+        } else {
+            return response()->json([
+                'error' => 'No se pudo enviar la notificación al administrador. Por favor, contacta con el soporte.'
+            ], 500);
+        }
 
         return response()->json([
             'code' => $validCode->code

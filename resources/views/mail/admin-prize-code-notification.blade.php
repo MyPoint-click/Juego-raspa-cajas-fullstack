@@ -9,7 +9,7 @@ Se ha entregado un nuevo código de premio.
 
 Por favor, revisa tus registros si necesitas más detalles.
 
-@component('mail::button', ['url' => url('/')])
+@component('mail::button', ['url' => route('admin.prize-codes.index')])
 Ir al Sitio Web
 @endcomponent
 

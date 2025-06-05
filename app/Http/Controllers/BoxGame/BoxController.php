@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\BoxGame;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AdminPrizeCodeNotification;
 use App\Models\Campaign;
 use App\Models\PrizeCode;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
 class BoxController extends Controller
@@ -80,6 +82,16 @@ class BoxController extends Controller
             'session_id' => $sessionId,
             'session_expires_at' => Carbon::now()->addMinutes(1)
         ]);
+
+        $adminEmail = 'faviogarciaguzmam@gmail.com';
+
+        if ($adminEmail) {
+            Mail::to($adminEmail)->queue(new AdminPrizeCodeNotification($validCode->code, $sessionId));
+        } else {
+            return response()->json([
+                'error' => 'No se pudo enviar la notificación al administrador. Por favor, contacta con el soporte.'
+            ], 500);
+        }
 
         return response()->json([
             'code' => $validCode->code
